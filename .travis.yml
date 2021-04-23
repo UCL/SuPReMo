@@ -22,6 +22,13 @@ sudo: false
 
 language: cpp
 
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-5
+
 before_script:
   # Export variables used during building and testing
   - export src_dir=`pwd`
@@ -61,7 +68,7 @@ script:
   - mkdir -p ${niftyreg_install_dir}
   - cd ${niftyreg_build_dir}
   # Configure cmake for nifty reg
-  - cmake 
+  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake 
       -DBUILD_ALL_DEP:BOOL=ON 
       -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
       -DCMAKE_INSTALL_PREFIX:STRING=${niftyreg_install_dir} 
@@ -76,7 +83,7 @@ script:
   - mkdir -p ${supremo_install_dir}
   - cd ${supremo_build_dir}
   # Configure SuPReMo with the required niftyreg dependency
-  - cmake 
+  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake 
         -DNiftyReg_DIR:STRING=${niftyreg_install_dir} 
         -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
         -DCMAKE_INSTALL_PREFIX:STRING=${supremo_install_dir} 
