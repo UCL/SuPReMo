@@ -1,4 +1,31 @@
-language: ruby
-rvm:
- - 2.2
- - jruby
+#  ====================================================================================================   
+#                                                                                                         
+#    SuPReMo: Surrogate Parameterised Respiratory Motion Model                                            
+#             An implementation of the generalised motion modelling and image registration framework      
+#                                                                                                         
+#    Copyright (c) University College London (UCL). All rights reserved.                                  
+#                                                                                                         
+#    This software is distributed WITHOUT ANY WARRANTY; without even                                      
+#    the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR                                  
+#    PURPOSE.                                                                                             
+#                                                                                                         
+#    See LICENSE.txt in the top level directory for details.                                              
+#                                                                                                         
+#  ====================================================================================================   
+
+
+# Most light-weight
+dist: trusty
+
+# Allow spin up of container instead of asking for full VM
+sudo: false
+
+language: cpp
+
+script:
+ # Get the version information
+ - echo `cmake --version`
+ # Configure CMake in the current build folder
+ - cmake .
+ # Run cmake build
+ - cmake --build . -- j2
