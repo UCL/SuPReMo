@@ -1,0 +1,10 @@
+./xcat/mat_1.nii.gz
+./xcat/mat_2.nii.gz
+./xcat/mat_3.nii.gz
+./xcat/mat_4.nii.gz
+./xcat/mat_5.nii.gz
+./xcat/mat_6.nii.gz
+./xcat/mat_7.nii.gz
+./xcat/mat_8.nii.gz
+./xcat/mat_9.nii.gz
+./xcat/mat_10.nii.gz
