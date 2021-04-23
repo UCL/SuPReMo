@@ -67,7 +67,7 @@ script:
       -DCMAKE_INSTALL_PREFIX:STRING=${niftyreg_install_dir} 
       ${niftyreg_source_dir}
   - cmake --build . -- -j2
-  - cmake --install
+  - cmake --install .
   # Build SuPReMo
   - echo "Building > SuPReMo"
   - echo "===================="
@@ -82,7 +82,7 @@ script:
         -DBUILD_TESTING:BOOL=ON
         ${src_dir}
   - cmake --build . -- -j2
-  - cmake --install
+  - cmake --install .
 
 
 
