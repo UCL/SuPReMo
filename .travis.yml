@@ -67,6 +67,9 @@ script:
       -DCMAKE_INSTALL_PREFIX:STRING=${niftyreg_install_dir} 
       ${niftyreg_source_dir}
   - cmake --build . -- -j2
+  - echo `pwd`
+  - cd ${niftyreg_build_dir}
+  - echo `ls ${niftyreg_install_dir}`
   - cmake --install .
   # Build SuPReMo
   - echo "Building > SuPReMo"
