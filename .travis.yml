@@ -27,7 +27,7 @@ addons:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-5
+      - g++-7
 
 before_script:
   # Export variables used during building and testing
@@ -68,7 +68,7 @@ script:
   - mkdir -p ${niftyreg_install_dir}
   - cd ${niftyreg_build_dir}
   # Configure cmake for nifty reg
-  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake 
+  - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake 
       -DBUILD_ALL_DEP:BOOL=ON 
       -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
       -DCMAKE_INSTALL_PREFIX:STRING=${niftyreg_install_dir} 
@@ -83,7 +83,7 @@ script:
   - mkdir -p ${supremo_install_dir}
   - cd ${supremo_build_dir}
   # Configure SuPReMo with the required niftyreg dependency
-  - CXX=/usr/bin/g++-5 CC=/usr/bin/gcc-5 cmake 
+  - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake 
         -DNiftyReg_DIR:STRING=${niftyreg_install_dir} 
         -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
         -DCMAKE_INSTALL_PREFIX:STRING=${supremo_install_dir} 
