@@ -1,0 +1,230 @@
+# Image pyramid test data
+
+
+## Data generated
+
+test expected output:
+	- supremo/motion-test/test-data/expectedOutcomes/3d_vol_pyramid_L0.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/3d_vol_pyramid_L1.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/3d_vol_pyramid_L2.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/2d_slice_dyn22_pyramid_L0.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/2d_slice_dyn22_pyramid_L1.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/2d_slice_dyn22_pyramid_L2.nii.gz
+test input:	
+	- supremo/motion-test/test-data/2d_slice_dyn22.nii.gz
+	- supremo/motion-test/test-data/3d_vol_static.nii.gz
+
+## reg_resp parameters
+
+-be 0.75 -static D:/debugData/resp/niftyMoMo/resp_referenceExperiments/experiment1_MR-slices/results/MCR.nii.gz -dynamic 300 D:/debugData/resp/niftyMoMo/inputData/dynFiles.txt -surr 2 D:/debugData/resp/niftyMoMo/inputData/surr.txt
+
+## Commit hash
+
+f69c1186abd2b48a688afcb9b2e02f8fa47832ac
+
+## Build mode
+
+Debug
+
+
+
+# Image similarity test data
+
+## Data generated
+
+test expected output:
+	- supremo/motion-test/test-data/expectedOutcomes/ssd_measure_22.txt
+test input
+	- supremo/motion-test/test-data/test_simil_ref_image_22.nii.gz
+	- supremo/motion-test/test-data/test_simil_simDyn_image_22.nii.gz
+
+## reg_resp parameters
+
+-be 0.75 -static D:/debugData/resp/niftyMoMo/resp_referenceExperiments/experiment1_MR-slices/results/MCR.nii.gz -dynamic 300 D:/debugData/resp/niftyMoMo/inputData/dynFiles.txt -surr 2 D:/debugData/resp/niftyMoMo/inputData/surr.txt
+ 
+ commit hash
+ -----------
+ c53275fe22d8624c40e16f91909aea1ef591544d
+
+## Build mode
+
+Debug
+
+
+
+# B-spline transformation test data
+
+## Data generated
+
+test expected output:
+	- supremo/motion-test/test-data/expectedOutcomes/test_warpWithCPG_a_warped_22.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/test_warpWithCPG_b_warped_22.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/test_warpWithCPG_a_dvf_22.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/test_warpWithCPG_b_dvf_22.nii.gz
+test input:
+	- supremo/motion-test/test-data/test_warpWithCPG_cpg_22.nii.gz
+	- supremo/motion-test/test-data/test_warpWithCPG_a_reference_22.nii.gz
+	- supremo/motion-test/test-data/test_warpWithCPG_ab_floating_b_reference22.nii.gz (i.e. floating = reference for experiment b)
+
+## reg_resp parameters
+
+-be 0.75 -static C:/debugData/niftyMoMo/resp_referenceExperiments/experiment1_MR-slices/results/MCR.nii.gz -dynamic 300 C:/debugData/niftyMoMo/inputData/dynFiles.txt -surr 2 C:/debugData/niftyMoMo/inputData/surr.txt -saveDyn C:/debugData/niftyMoMo/resp_referenceExperiments/experiment1_MR-slices/tmp -ln 1 -sx -5
+
+## commit hash
+
+85da7703d441fd605f3d8197706e0e5b0d74b7a0
+149704501cc2232d0dfbe7f5d84aaa81bd822cff (including DVF)
+
+## Build mode
+
+Release
+
+## Notes
+
+this->interpolation = 1
+reference only defines geometry (obvious but good to keep in mind)
+
+
+
+
+# Objective function test data
+
+## Data generated
+
+test expected output:
+	- supremo/motion-test/test-data/expectedOutcomes/objectiveFunctionValue_at0.txt
+	- supremo/motion-test/test-data/expectedOutcomes/test_rcm_grad_lev_0_iter_0_surr_0.nii.gz
+	- supremo/motion-test/test-data/expectedOutcomes/test_rcm_grad_lev_0_iter_0_surr_1.nii.gz
+
+## reg_resp parameters
+
+-dynamic 10 C:/debugData/niftyMoMo/inputDataVols/volumes_XCAT_fileList.txt -surr 2 C:/debugData/niftyMoMo/inputDataVols/surrogate_XCAT_ApSi_Zsc.txt -static C:/debugData/niftyMoMo/inputDataVols/mat_1.nii.gz -be 0.1 -sx 10 -noImRes -ln 1
+
+-dynamic 10 C:/debugData/niftyMoMo/inputDataVols/volumes_XCAT_fileList.txt -surr 2 C:/debugData/niftyMoMo/inputDataVols/surrogate_XCAT_ApSi_Zsc_reco.txt -static C:/debugData/niftyMoMo/inputDataVols/mat_1.nii.gz -be 0.1 -sx 10 -noImRes -ln 1
+
+## commit hash
+
+fc4e7b770e6c00078b6f7e02ef76202e81db4e9a
+57939132c04175c28c14b4c1c0c249ad7ec5e1ce
+
+## Build mode
+
+Debug
+
+## Notes
+
+Testing of objective function value and gradient at zero. 
+The expected objective function value was updated on 23/06/2020 because the floor calculation provided by nifty-reg on 
+Windows systems provided wrong results. Floor of 0 resulted in -1, which by definition is not correct. Hence the generated files
+listed above were updated. Tests on both platforms now succeed. 
+Also note that the surrogate file was updated (the contents of the original one was changed since 2 surrogates is more aprpopriate 
+for an image-reconstruction application scenario).
+
+
+
+# Motion-compensated image reconstruction tests (average weighting)
+
+## Data generated
+	- respMCR_fitIt20_switchIt10_l3_sx10_be01.nii.gz
+	- respRCM_fitIt20_switchIt10_l3_sx10_be01.nii.gz
+
+## reg_resp parameters
+
+-dynamic 10 D:/debugData/resp/niftyMoMo/inputDataVols/volumes_XCAT_fileList.txt -surr 2 D:/debugData/resp/niftyMoMo/inputDataVols/surrogate_XCAT_ApSi_Zsc_reco.txt -static D:/debugData/resp/niftyMoMo/inputDataVols/mat_1.nii.gz -rcm D:/debugData/resp/niftyMoMo/respRCM_fitIt20_switchIt10_l3_sx10_be01.nii.gz -be 0.1 -sx 10 -ln 3 -maxFitIt 20 -mcrType 1 -maxSwitchIt 10 -saveMCR D:/debugData/resp/niftyMoMo/respMCR_fitIt20_switchIt10_l3_sx10_be01.nii.gz
+
+## commit hash 
+4466e3cb11dbc184f89bf06afd6a7157ddc1aa5a
+
+## Build mode
+
+Release
+
+## Notes
+
+Testing weighted averaging motion-compensated image reconstruction with final image (MCR) and correspondence model (RCM). Added surrogate file for "fitting-only" case. 
+
+
+
+
+# Low-resolution image acquisition tests
+
+## Data generated
+	- lowRes_curFloating_image_11_ln_0_of_2.nii.gz
+	- lowRes_curFloating_image_197_ln_0_of_2.nii.gz
+	- lowRes_curReference_image_11_ln_0_of_2.nii.gz
+	- lowRes_curReference_image_197_ln_0_of_2.nii.gz
+	- lowRes_warped_image_11_ln_0_of_2.nii.gz
+	- lowRes_warped_image_197_ln_0_of_2.nii.gz	
+	- expectedOutcomes/lowRes_dynamicAfterAdjoint_image_11_ln_0_of_2.nii.gz
+	- expectedOutcomes/lowRes_dynamicAfterAdjoint_image_197_ln_0_of_2.nii.gz
+	- expectedOutcomes/lowRes_simDyn_image_11_ln_0_of_2.nii.gz
+	- expectedOutcomes/lowRes_simDyn_image_197_ln_0_of_2.nii.gz
+	- expectedOutcomes/lowRes_weightsInDynAfterAdjImage_image_11_ln_0_of_2.nii.gz
+	- expectedOutcomes/lowRes_weightsInDynAfterAdjImage_image_197_ln_0_of_2.nii.gz
+
+## reg_resp parameters
+
+-static ./target_2x2x2.nii.gz -dynamic 355 ./modelSlices_tumourA_sagAxi_R1.txt -surr 2 ./surrSkinDiaDetected_tumourA_sagAxi_R1.txt -dType 1 -mcrType 1 -ln 2 -maxSwitchIt 2 -maxMCRIt 1 -sx 10 -maxFitIt 20 -v -rcm ./motionModelExperiments/23__2020-05-28/23_RCM_resp.nii.gz -saveInterMCRs ./motionModelExperiments/23__2020-05-28/23_interMCR_resp/ -saveMCR ./motionModelExperiments/23__2020-05-28/23_MCR_resp.nii.gz 
+
+Work dir (laptop using 2018 XCAT simulation): C:/debugData/niftyMoMo/2018_12/niftiFromDVF
+
+## commit hash 
+
+89e52850089b9804c301ef5a7b4005ec184586e6
+
+## Build mode
+
+Debug
+
+## Notes
+
+The data for this experiement on the external HDD at HH, not currently on the network.
+
+
+
+# Motion-compensated image reconstruction tests (IBP super resolution)
+
+## Data generated
+
+* The test-case input data
+  * ./xcat/MRsim/modelSlices_tumourA_sagAxi_R1.txt
+  * ./xcat/MRsim/surrSkinDiaDetected_tumourA_sagAxi_R1.txt
+  * ./xcat/MRsim/target_2x2x2.nii.gz
+  * ./xcat/MRsim/simInterleavedAcquisition_int_tumourA_sagAxi/* (the multi-slice data)
+
+* The input RCMs saved from reg-resp. These are used as is for the MCR 
+  * ./xcat/MRSim/RCM_lev_0_initial_type2_itNum2.nii.gz
+  * ./xcat/MRSim/RCM_lev_0_iter_0_type2_itNum2.nii.gz
+  * ./xcat/MRSim/RCM_lev_0_iter_0_type3_itNum1.nii.gz
+
+* The expected outcomes
+  * ./expectedOutcomes/MCR_IBP_lev_0_initial_type2_itNum2.nii.gz
+  * ./expectedOutcomes/MCR_IBP_lev_0_iter_0_type2_itNum2.nii.gz
+  * ./expectedOutcomes/MCR_IBP_lev_0_iter_0_type3_itNum1.nii.gz
+
+## reg_resp parameters
+
+### restart reconstruction (MCR-type 2)
+
+-static ./xcat/MRsim/target_2x2x2.nii.gz -dynamic 355 ./xcat/MRsim/modelSlices_tumourA_sagAxi_R1.txt -surr 2 ./xcat/MRsim/surrSkinDiaDetected_tumourA_sagAxi_R1.txt -ln 3 -dType 1 -mcrType 2 -maxMCRIt 2 -sx 10 -maxFitIt 50 -v 
+
+C:/development/niftyMoMo/niftyMoMo/testing/test-data/
+
+### update reconstruction (MCR-type 3)
+
+-static ./xcat/MRsim/target_2x2x2.nii.gz -dynamic 355 ./xcat/MRsim/modelSlices_tumourA_sagAxi_R1.txt -surr 2 ./xcat/MRsim/surrSkinDiaDetected_tumourA_sagAxi_R1.txt -ln 3 -dType 1 -mcrType 3 -maxMCRIt 1 -sx 10 -maxFitIt 50 -v 
+
+C:/development/niftyMoMo/niftyMoMo/testing/test-data/
+
+## commit hash 
+
+6d18fd2c333413bfdc3ef136c6b274389b35181a
+
+## Build mode
+
+Debug
+
+## Note:
+
+The tests require the image border to be excluded from the comparison. The updated reconstruction requried a slightly more 
+threshold due to the repeated reconstrutcion performed during the test.
