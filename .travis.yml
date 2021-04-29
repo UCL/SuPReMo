@@ -99,6 +99,7 @@ jobs:
         - make install
     - stage: testing
       name: "Running tests"
+      script:
         # Run the tests
         - cd ${supremo_build_dir}
         - ctest --output-on-failure -C Release
