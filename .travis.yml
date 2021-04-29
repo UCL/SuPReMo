@@ -28,6 +28,7 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-7
+      - doxygen
 
 before_script:
   # Export variables used during building and testing
