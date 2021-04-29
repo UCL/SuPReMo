@@ -109,5 +109,11 @@ jobs:
       name: "Building and deploying documentation"
       script:
         - doxygen Doxyfile
+      
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GH_REPO_PRV_TOKEN
+        local_dir: docu/html
 
 
