@@ -32,8 +32,8 @@ addons:
 
 jobs:
   include: 
-    - stage: build dependencies
-      name: "Building dependencies"
+    - stage: build and test
+      name: "Building dependencies and SuPReMo then running tests"
       script:
         # Export variables used during building and testing
         - export src_dir=`pwd`
@@ -79,9 +79,7 @@ jobs:
             ${niftyreg_source_dir}
         - cmake --build . -- -j2
         - make install
-    - stage: build SuPReMo
-      name: "Building SuPReMo"
-      script:
+
         # Build SuPReMo
         - echo "Building > SuPReMo"
         - echo "===================="
@@ -97,13 +95,14 @@ jobs:
               ${src_dir}
         - cmake --build . -- -j2
         - make install
-    - stage: testing
-      name: "Running tests"
-      script:
+
         # Run the tests
         - cd ${supremo_build_dir}
         - ctest --output-on-failure -C Release
 
-
+    - stage: documentation
+      name: "Building and deploying documentation"
+      script:
+        - doxygen Doxyfile
 
 
