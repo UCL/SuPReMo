@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/UCL/SuPReMo.svg?token=ryYEyvSMfhuCX4W6bRRD&branch=main)](https://travis-ci.com/UCL/SuPReMo)
+
 # SuPReMo
 
 Software implementing the unified motion modelling and image registation 
