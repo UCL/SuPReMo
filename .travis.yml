@@ -111,7 +111,7 @@ jobs:
 
         # Work on a copy of the Doxyfile and remove this later
         - cp ./Doxyfile ./Doxyfile.loc
-        - sed -i.bak 's/.\/utilities\/doxygenStyle\//.\/docu\/html\//g' ./Doxyfile.loc
+        - sed -i 's/.\/utilities\/doxygenStyle\//.\/docu\/html\//g' ./Doxyfile.loc
         - doxygen Doxyfile.loc
 
         # Remove the local doxyfile again so that we end up with a clean git repo.
@@ -119,7 +119,7 @@ jobs:
       
       deploy:
         provider: pages
-        cleanup: false
+        skip_cleanup: true
         github_token: $GH_REPO_PRV_TOKEN
         local_dir: docu/html
         # Uncomment once initial documentation is complete
