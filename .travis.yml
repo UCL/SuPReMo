@@ -108,8 +108,14 @@ jobs:
         # Need to point the html style header to the local so that it will be deployed
         - mkdir -p ./docu/html
         - cp utilities/doxygenStyle/* ./docu/html
-        - sed -i.bak 's/.\/utilities\/doxygenStyle\//.\/docu\/html\//g' ./Doxyfile
-        - doxygen Doxyfile
+
+        # Work on a copy of the Doxyfile and remove this later
+        - cp ./Doxyfile ./Doxyfile.loc
+        - sed -i.bak 's/.\/utilities\/doxygenStyle\//.\/docu\/html\//g' ./Doxyfile.loc
+        - doxygen Doxyfile.loc
+
+        # Remove the local doxyfile again so that we end up with a clean git repo.
+        - rm Doxyfile.loc
       
       deploy:
         provider: pages
