@@ -99,8 +99,15 @@ public:
    */
   std::string getCommandLine() const;
 
+  /**
+   * Returs true if all required parameters were set in the command line, false otherwise. 
+   */
+  bool getAllReqreuiredParametersSet() const { return this->allRequiredParametersSet; };
+
+
 private:
   std::vector <std::string> tokens; ///< vector with individual command line entries
   std::string executableName;       ///< the executable name contained on the command line
+  bool allRequiredParametersSet;    ///< defines if all required parameters were found
 };
 

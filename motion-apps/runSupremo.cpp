@@ -50,43 +50,42 @@ int main( int argc, char *argv[] )
   commandLineOptions["-dynamic"]  = { 2, true, "Dynamic image data" };
   commandLineOptions["-surr"]     = { 2, true, "Surrogate data" };
 
-  commandLineOptions["-dType"]                  = { 1, false, "Dynamic image type. Determines the image acuqisiton simulation" };
-  commandLineOptions["-defSpace"]               = { 1, false, "Defines the space of the dynamic image" };
-  commandLineOptions["-mcrType"]                = { 1, false, "Type of motion compensated imgae reconstruction" };
-  commandLineOptions["-maxMCRIt"]               = { 1, false, "Maximum number of MCR iterations" };
-  commandLineOptions["-outRCM"]                 = { 1, false, "Output file name for respiratory correspondence model" };
-  commandLineOptions["-outSimDyn"]              = { 1, false, "Output file directory for the simulated dynamic images" };
-  commandLineOptions["-outDVFs"]                = { 1, false, "Output file directory for the correspondence model-generated DVFS. The DVFs will have the size of the dynamic images." };
-  commandLineOptions["-outMCR"]                 = { 1, false, "Output file name for the motion compensated reconstructed image" };
-  commandLineOptions["-outInterMCR"]            = { 1, false, "Output directory name for the intermediate motion compensated reconstructed images" };
-  commandLineOptions["-outInterGrad"]           = { 1, false, "Output directory name for the intermediate gradients of the objective function" };
-  //commandLineOptions["-outDistMap"]             = { 1, false, "Output file name for distance map of the statistical motion mask" };
-  //commandLineOptions["-outShapeModelParams"]    = { 1, false, "Output file name for statistical motion mask parameters" };
-  commandLineOptions["-inRCM"]                  = { 1, false, "Input name for a respiratory correspondence model. Comma-separated list expected" };
-  commandLineOptions["-transType"]              = { 1, false, "Transformation type" };
-  commandLineOptions["-distMap"]                = { 1, false, "Input distance map" };
-  // commandLineOptions["-statShapeModel"]         = { 1, false, "File name of the input statistical shape model" };
-  commandLineOptions["-sx"]                     = { 1, false, "B-spline control point spacing in x-direciton" };
-  commandLineOptions["-sy"]                     = { 1, false, "B-spline control point spacing in y-direciton" };
-  commandLineOptions["-sz"]                     = { 1, false, "B-spline control point spacing in z-direciton" };
-  commandLineOptions["-be"]                     = { 1, false, "Bending energy weight" };
-  commandLineOptions["-le"]                     = { 1, false, "Linear energy weight" };
-  commandLineOptions["-go"]                     = { 1, false, "Gap/overlap constraint weight when using sliding transformation" };
-  commandLineOptions["-maxSwitchIt"]            = { 1, false, "Maximum nuimber of switch iterations" };
-  commandLineOptions["-ln"]                     = { 1, false, "Number of pyramid levels" };
-  commandLineOptions["-lp"]                     = { 1, false, "Number of pyramid levels to be performed" };
-  commandLineOptions["-maxFitIt"]               = { 1, false, "Maximum number of fit iterations" };
+  commandLineOptions["-dType"]        = { 1, false, "Dynamic image type. Determines the image acuqisiton simulation" };
+  commandLineOptions["-defSpace"]     = { 1, false, "Defines the space of the dynamic image" };
+  commandLineOptions["-mcrType"]      = { 1, false, "Type of motion compensated imgae reconstruction" };
+  commandLineOptions["-maxMCRIt"]     = { 1, false, "Maximum number of MCR iterations" };
+  commandLineOptions["-outRCM"]       = { 1, false, "Output file name for respiratory correspondence model" };
+  commandLineOptions["-outSimDyn"]    = { 1, false, "Output file directory for the simulated dynamic images" };
+  commandLineOptions["-outDVFs"]      = { 1, false, "Output file directory for the correspondence model-generated DVFS. The DVFs will have the size of the dynamic images." };
+  commandLineOptions["-outMCR"]       = { 1, false, "Output file name for the motion compensated reconstructed image" };
+  commandLineOptions["-outInterMCR"]  = { 1, false, "Output directory name for the intermediate motion compensated reconstructed images" };
+  commandLineOptions["-outInterGrad"] = { 1, false, "Output directory name for the intermediate gradients of the objective function" };
+  commandLineOptions["-inRCM"]        = { 1, false, "Input name for a respiratory correspondence model. Comma-separated list expected" };
+  commandLineOptions["-transType"]    = { 1, false, "Transformation type" };
+  commandLineOptions["-distMap"]      = { 1, false, "Input distance map" };
+  commandLineOptions["-sx"]           = { 1, false, "B-spline control point spacing in x-direciton" };
+  commandLineOptions["-sy"]           = { 1, false, "B-spline control point spacing in y-direciton" };
+  commandLineOptions["-sz"]           = { 1, false, "B-spline control point spacing in z-direciton" };
+  commandLineOptions["-be"]           = { 1, false, "Bending energy weight" };
+  commandLineOptions["-le"]           = { 1, false, "Linear energy weight" };
+  commandLineOptions["-go"]           = { 1, false, "Gap/overlap constraint weight when using sliding transformation" };
+  commandLineOptions["-maxSwitchIt"]  = { 1, false, "Maximum nuimber of switch iterations" };
+  commandLineOptions["-ln"]           = { 1, false, "Number of pyramid levels" };
+  commandLineOptions["-lp"]           = { 1, false, "Number of pyramid levels to be performed" };
+  commandLineOptions["-maxFitIt"]     = { 1, false, "Maximum number of fit iterations" };
+  commandLineOptions["-h"]            = { 1, false, "Print help message." };
 
   // Parse the command line
   std::shared_ptr<CommandLineParser> parser = std::make_shared<CommandLineParser>( argc, argv, commandLineOptions );
   std::cout << parser->getCommandLine() << std::endl;
 
   // Check if help was required 
-  if (parser->cmdOptionExists( "-h" ))
+  if (parser->cmdOptionExists( "-h" ) || parser->getAllReqreuiredParametersSet())
   {
-    // TODO: print help and exit
+      // TODO: print help and exit
+      std::cout << commandLineOptions["-refState"].description << std::endl;
+      return EXIT_FAILURE;
   }
-
 
   //--------------------------------
   // Load the reference-state image 

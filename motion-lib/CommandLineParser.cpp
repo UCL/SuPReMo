@@ -58,6 +58,7 @@ std::vector<std::string> splitStringbyDelimiter(const std::string & stringToSpli
 // CommandLineParser::CommandLineParser
 //--------------------------------------
 CommandLineParser::CommandLineParser(int &argc, char **argv, std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn)
+    :allRequiredParametersSet(true)
 {
   // Save the executable name
   this->executableName = std::string(argv[0]);
@@ -109,9 +110,9 @@ CommandLineParser::CommandLineParser(int &argc, char **argv, std::map<std::strin
     if ( iter->second.required && (! this->cmdOptionExists(iter->first)) )
     {
       char msg[200];
-      sprintf_s( msg, "Required command line option: %s WAS NOT PROVIDED", iter->first.c_str() );
-      supremo_print_error( msg );
-      supremo_exit( 1, __FILE__, __LINE__ );
+      sprintf_s( msg, "Required command line option: %s was not provided", iter->first.c_str() );
+      supremo_print_warning( msg );
+      this->allRequiredParametersSet = false;
     }
   }
 }
