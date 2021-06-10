@@ -46,46 +46,134 @@ int main( int argc, char *argv[] )
   
   // Specify a map that lists all known parameters
   std::map<std::string, CommandLineOption> commandLineOptions;
-  commandLineOptions["-refState"] = { 1, true, "Reference state image" };
-  commandLineOptions["-dynamic"]  = { 2, true, "Dynamic image data" };
-  commandLineOptions["-surr"]     = { 2, true, "Surrogate data" };
-
-  commandLineOptions["-dType"]        = { 1, false, "Dynamic image type. Determines the image acuqisiton simulation" };
-  commandLineOptions["-defSpace"]     = { 1, false, "Defines the space of the dynamic image" };
-  commandLineOptions["-mcrType"]      = { 1, false, "Type of motion compensated imgae reconstruction" };
-  commandLineOptions["-maxMCRIt"]     = { 1, false, "Maximum number of MCR iterations" };
-  commandLineOptions["-outRCM"]       = { 1, false, "Output file name for respiratory correspondence model" };
-  commandLineOptions["-outSimDyn"]    = { 1, false, "Output file directory for the simulated dynamic images" };
-  commandLineOptions["-outDVFs"]      = { 1, false, "Output file directory for the correspondence model-generated DVFS. The DVFs will have the size of the dynamic images." };
-  commandLineOptions["-outMCR"]       = { 1, false, "Output file name for the motion compensated reconstructed image" };
-  commandLineOptions["-outInterMCR"]  = { 1, false, "Output directory name for the intermediate motion compensated reconstructed images" };
-  commandLineOptions["-outInterGrad"] = { 1, false, "Output directory name for the intermediate gradients of the objective function" };
-  commandLineOptions["-inRCM"]        = { 1, false, "Input name for a respiratory correspondence model. Comma-separated list expected" };
-  commandLineOptions["-transType"]    = { 1, false, "Transformation type" };
-  commandLineOptions["-distMap"]      = { 1, false, "Input distance map" };
-  commandLineOptions["-sx"]           = { 1, false, "B-spline control point spacing in x-direciton" };
-  commandLineOptions["-sy"]           = { 1, false, "B-spline control point spacing in y-direciton" };
-  commandLineOptions["-sz"]           = { 1, false, "B-spline control point spacing in z-direciton" };
-  commandLineOptions["-be"]           = { 1, false, "Bending energy weight" };
-  commandLineOptions["-le"]           = { 1, false, "Linear energy weight" };
-  commandLineOptions["-go"]           = { 1, false, "Gap/overlap constraint weight when using sliding transformation" };
-  commandLineOptions["-maxSwitchIt"]  = { 1, false, "Maximum nuimber of switch iterations" };
-  commandLineOptions["-ln"]           = { 1, false, "Number of pyramid levels" };
-  commandLineOptions["-lp"]           = { 1, false, "Number of pyramid levels to be performed" };
-  commandLineOptions["-maxFitIt"]     = { 1, false, "Maximum number of fit iterations" };
-  commandLineOptions["-h"]            = { 1, false, "Print help message." };
+  // Required
+  commandLineOptions["-refState"] = { 1, true, "Reference state image (nifti format)", "<filename>" };
+  commandLineOptions["-dynamic"]  = { 2, true, "Dynamic image data (Number of dynamic images and name of a text "
+                                               "file containing the list of dynamic images)", "<int> <filename>" };
+  commandLineOptions["-surr"]     = { 2, true, "Surrogate data (Number of surrogate signals and name of a text "
+                                               "file containing the values of the surrogate signal(s).These should "
+                                               "be ordered with 1st value of each signal, then 2nd value of each "
+                                               "signal, ..., then last value of each signal)", "<int> <filename>" };
+  // Dynamic image data
+  commandLineOptions["-dType"]        = { 1, false, "Specify type of dynamic images, where: \n"
+                                                    "[0] = Full resolution images(default) \n"
+                                                    "Can be full or partial image data(slices, slabs) that has the same "
+                                                    "resolution as the reference state image.The nifti file headers should "
+                                                    "provide the imaging geometry.\n"
+                                                    "[1] = Low resolution images\n"
+                                                    "Can be full or partial image data(slices, slabs) that has a lower "
+                                                    "resolution than the reference state image.Acquisition of low res data will be "
+                                                    "simulated along any dimensions where dynamic voxel size > reference state voxel "
+                                                    "size. The nifti file headers should provide the imaging geometry.", "<int>" };
+  commandLineOptions["-defSpace"]     = { 1, false, "Filename of the image used to define the space of the deformed images. "
+                                                    "This image is used to define the extent and resolution(if specified in "
+                                                    "voxels) of the modeland transform CPGs.If a defSpace image is not "
+                                                    "specified the reference state image will be used.", "<filename>" };
+  // Motion-compensated image reconstruction
+  commandLineOptions["-mcrType"]      = { 1, false, "Specify type of motion compensated image reconstruction, where:\n"
+                                                    "[0] = No motion compensated image reconstruction(default)\n"
+                                                    "[1] = Weighted average of deformed dynamic images\n"
+                                                    "[2] = Super resoltuion(iterative back - projection) - restart recon\n"
+                                                    "[3] = Super resoltuion(iterative back - projection) - update recon", "<int>" };
+  commandLineOptions["-maxMCRIt"]     = { 1, false, "Maximum number of iterations to use with iterative reconstruction methods [5]\n"
+                                                    "When motion compensated image reconstruction is performed the reference state image "
+                                                    "provided as input is used to define the space of the reconstructed image.", "<int>" };
+  // Out-/input options
+  commandLineOptions["-outRCM"]       = { 1, false, "Filename for saving the respiratory correspondence model [outputRCM.nii.gz]", "<filename>" };
+  commandLineOptions["-outMCR"]       = { 1, false, "The final motion compensated image reconstruction will be saved using the "
+                                                    "filename provided", "<filename>" };
+  commandLineOptions["-outSimDyn"]    = { 1, false, "The final simualted dynamic image data will be saved in the folder specified", "<folder>" };
+  commandLineOptions["-outDVFs"]      = { 1, false, "The final correspondence model-generated DVFs will be saved in the folder "
+                                                    "specified.The DVFs will have the size of the dynamic images.", "<folder>" };
+  commandLineOptions["-outInterMCR"]  = { 1, false, "The intermediate MCRs will be saved to the folder specified", "<folder>" };
+  commandLineOptions["-outInterGrad"] = { 1, false, "The intermediate objective function gradients will be saved to the folder specified", "<folder>" };
+  commandLineOptions["-inRCM"]        = { 1, false, "Input file name(s) for a respiratory correspondence model (comma-separated list, one file per sliding "
+                                                    "region required if used).", "<fName1>,<fName2>" };
+  // Transformation options
+  commandLineOptions["-transType"]    = { 1, false, "Transformation type [0]\n"
+                                                    "[0] = B-spline transformation\n"
+                                                    "[1] = Sliding B-spline transformation(requires signed distance map)", "<int>" };
+  commandLineOptions["-sx"]           = { 1, false, "Final grid spacing along the x axis in mm (in voxel if negative value) [5 voxels]", "<float>" };
+  commandLineOptions["-sy"]           = { 1, false, "Final grid spacing along the y axis in mm (in voxel if negative value) [sx value]", "<float>" };
+  commandLineOptions["-sz"]           = { 1, false, "Final grid spacing along the z axis in mm (in voxel if negative value) [sx value]", "<float>" };
+  commandLineOptions["-be"]           = { 1, false, "Weight of the bending energy penalty term [0.0]", "<float>" };
+  commandLineOptions["-le"]           = { 1, false, "Weight of the first order penalty term (symmetric and anti-symmetric part of the Jacobian) [0.0]", "<float>" };
+  commandLineOptions["-distMap"]      = { 1, false, "Signed distance map defining boundary of sliding regions at the zero-crossing", "<filename>" };
+  commandLineOptions["-go"]           = { 1, false, "Weight of the gap-overlap penalty term when using sliding transformation", "<float>" };
+  // Optimisation options
+  commandLineOptions["-maxSwitchIt"]  = { 1, false, "Maximum number of times to iterate between motion compensate image reconstruction and fitting "
+                                                    "the respiratory correspondence model[10]", "<int>" };
+  commandLineOptions["-ln"]           = { 1, false, "Number of level imagepyramid levels to generate [3]", "<int>" };
+  commandLineOptions["-lp"]           = { 1, false, "Only perform processing on the first lp levels [ln]", "<int>" };
+  commandLineOptions["-maxFitIt"]     = { 1, false, "Maximum number of respiratory correspondence model fitting iterations [300]", "<int>" };
+  // Help/information
+  commandLineOptions["-h"]            = { 0, false, "Print help message.", "" };
+  
 
   // Parse the command line
   std::shared_ptr<CommandLineParser> parser = std::make_shared<CommandLineParser>( argc, argv, commandLineOptions );
   std::cout << parser->getCommandLine() << std::endl;
 
-  // Check if help was required 
+  // Check if help is required 
   if (parser->cmdOptionExists( "-h" ) || parser->getAllReqreuiredParametersSet())
   {
-      // TODO: print help and exit
-      std::cout << commandLineOptions["-refState"].description << std::endl;
-      return EXIT_FAILURE;
-  }
+    // Required: 
+    std::vector<std::string> opts;
+    opts.push_back("-refState");
+    opts.push_back("-dynamic");
+    opts.push_back("-surr");
+    printFormattedCommandLineOptions(commandLineOptions, "Required options", 100, opts);
+
+    // Dynamic image data options
+    opts.erase(opts.begin(), opts.end());
+    opts.push_back("-dType");
+    opts.push_back("-defSpace");
+    printFormattedCommandLineOptions(commandLineOptions, "Dynamic image data options", 100, opts);
+
+    // Motion-compensated image reconstruction
+    opts.erase(opts.begin(), opts.end());
+    opts.push_back("-mcrType");
+    opts.push_back("-maxMCRIt");
+    printFormattedCommandLineOptions(commandLineOptions, "Motion-compensated image reconstruction", 100, opts);
+
+    // Out-/input options
+    opts.erase(opts.begin(), opts.end());
+    opts.push_back("-outRCM");
+    opts.push_back("-outMCR");
+    opts.push_back("-outSimDyn");
+    opts.push_back("-outDVFs");
+    opts.push_back("-outInterMCR");
+    opts.push_back("-outInterGrad");
+    opts.push_back("-inRCM");
+    printFormattedCommandLineOptions(commandLineOptions, "Out-/input options", 100, opts);
+
+    // Transformation options
+    opts.erase(opts.begin(), opts.end());
+    opts.push_back("-transType");
+    opts.push_back("-sx");
+    opts.push_back("-sy");
+    opts.push_back("-sz");
+    opts.push_back("-be");
+    opts.push_back("-le");
+    opts.push_back("-distMap");
+    opts.push_back("-go");
+    printFormattedCommandLineOptions(commandLineOptions, "Transformation options", 100, opts); 
+    
+    // Optimisation options
+    opts.erase(opts.begin(), opts.end());
+    opts.push_back("-maxSwitchIt");
+    opts.push_back("-ln");
+    opts.push_back("-lp");
+    opts.push_back("-maxFitIt");
+    printFormattedCommandLineOptions(commandLineOptions, "Optimisation options", 100, opts);
+
+    // Help/information
+    opts.erase(opts.begin(), opts.end());
+    opts.push_back("-h");
+    printFormattedCommandLineOptions(commandLineOptions, "Help/information", 100, opts);
+
+    return EXIT_SUCCESS;
+}
 
   //--------------------------------
   // Load the reference-state image 
