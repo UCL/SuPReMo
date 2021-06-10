@@ -51,11 +51,14 @@ public:
    * \param numberOfLevels Total number of pyramid levels. Will be increased, if numberOfLevelsToPerform is larger than this.
    * \param numberOfLevelsToPerform Total number of levels to perform. If it is larger than numberOfLevels, it will be updated.
    * \param minNumberOfVoxelsPerDim The minimum number of voxels per level below which a dimension will not be subsampled.
+   * \param minVoxDim The minimal voxel dimension. If minVoxDim is provided, then the image is only downsampled if 
+                      voxel size in the resampled image <= minVoxDim.
    */
   void GenerateLevels( const nifti_image* const imageIn,
                        unsigned int numberOfLevels,
                        unsigned int numberOfLevelsToPerform,
-                       unsigned int minNumberOfVoxelsPerDim = 1, float (* minVoxDim)[3] =nullptr );
+                       unsigned int minNumberOfVoxelsPerDim = 1, 
+                       float (* minVoxDim)[3] = nullptr );
   
   /** Get the pointer to a nifti image that represents a level of the decimating Gaussian image pyramid.
    * \param level The requested level. 

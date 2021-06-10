@@ -148,7 +148,7 @@ void printFormattedCommandLineOptions(const std::map<std::string, CommandLineOpt
 //--------------------------------------
 // CommandLineParser::CommandLineParser
 //--------------------------------------
-CommandLineParser::CommandLineParser(int &argc, char **argv, std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn)
+CommandLineParser::CommandLineParser(int &argc, char **argv, const std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn)
     :allRequiredParametersSet(true)
 {
   // Save the executable name
@@ -165,10 +165,10 @@ CommandLineParser::CommandLineParser(int &argc, char **argv, std::map<std::strin
   // 1) check that the option is known 
   // 2) skip the N further components of that option before proceeding
   bool* knownAndChecked = new bool[this->tokens.size()]; // ensure initialisation to false
-  for ( int i = 0; i < this->tokens.size(); ++i )
+  for ( size_t i = 0; i < this->tokens.size(); ++i )
     knownAndChecked[i] = false;
 
-  for ( int i = 0; i < this->tokens.size(); ++i )
+  for ( size_t i = 0; i < this->tokens.size(); ++i )
   {
     // find the token in the map of known parameters
     auto curCMDOption = allowedCommandLineOptionsIn.find( this->tokens[i] );
@@ -183,7 +183,7 @@ CommandLineParser::CommandLineParser(int &argc, char **argv, std::map<std::strin
     else{
       // set the known and checked for the parameter to true and also the n numbers required by that command
       knownAndChecked[i] = true;
-      int curNumOfParameterParts = allowedCommandLineOptionsIn[this->tokens[i]].numberOfComponents;
+      int curNumOfParameterParts = allowedCommandLineOptionsIn.find(this->tokens[i])->second.numberOfComponents;
       for ( int j = 0; j < curNumOfParameterParts; ++j )
       {
         ++i;
@@ -206,6 +206,8 @@ CommandLineParser::CommandLineParser(int &argc, char **argv, std::map<std::strin
       this->allRequiredParametersSet = false;
     }
   }
+  // clean up
+  delete[] knownAndChecked;
 }
 
 

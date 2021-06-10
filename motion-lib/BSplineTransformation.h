@@ -76,10 +76,10 @@ public:
   virtual void InitialiseLevel( unsigned int level );
   
   /** Set the parameters that define the b-spline transformation.
-   *  \param paramsIn Pointer to the parameters that will be copied to the internal transformation parameters.
+   *  \param parametersIn Pointer to the parameters that will be copied to the internal transformation parameters.
    *  \param parametersAreDisplacements Set to true if the parameters are displacements (i.e. relative to control-point position and NOT absolute positions)
    */
-  void SetParameters( PrecisionType* paramsIn, bool parametersAreDisplacements );
+  void SetParameters( PrecisionType* parametersIn, bool parametersAreDisplacements);
   
   /** For a given target image, calculate a deformation field. 
    *  \param targetImageIn The target image defines the geometry of the DVF, or the voxel locations for which deformation vectors are calculated.
@@ -88,7 +88,6 @@ public:
    
   /** Calculates the gradient of an image for a given deformation vector field.
    *  \param denseDVFIn Deformation vector field 
-   *  \param sourceImage The image for which the gradient is calculated
    */
   virtual BSplineTransformation::PrecisionType* GetDVFGradientWRTTransformationParameters( nifti_image* denseDVFIn );
   

@@ -140,13 +140,16 @@ int checkImageGeometryEquality( nifti_image* imageToTest, nifti_image* expectedI
 
 
 /** Test images for equality
- *  The test will complete the image geometry test and in addition will test the contents. 
+ *  The test will complete the image geometry test and in addition will test the contents. Currently only 
+ *  three dimensional images are supported. 
  *  Items tested are:
  *   - nbyper
  *   - voxel-by-voxel comparision
- * \param imageToTest Pointer to the nifti image that is compared to the expected outcome
- * \param expectedImage The expected outcome image
- * \param allowedVoxelDeviation Allow for numerical inaccuracies
+ * \param imageToTest Pointer to the nifti image that is compared to the expected outcome.
+ * \param expectedImage The expected outcome image. 
+ * \param allowedVoxelDeviation Allow for numerical inaccuracies. 
+ * \param ignoreBoundaySize Ignore differences at the border for the given size. 
+ * \param maxAllowedNumberOfDeviations Allow a certain deviations up to the given number. 
  */
 template<class VoxelType>
 int checkImageEquality( nifti_image* imageToTest, 

@@ -47,7 +47,6 @@ public:
   
   /** Initiate the optimisation
    *  \param startingPoint Point where to start the optimisation from. Can be null-pointer to start form zero. 
-   *  \param continueOptimisation Use internally calculated parameters to continue a previously performed optimisation.
    */
   virtual void Optimise( PrecisionType* startingPoint ) = 0;
   

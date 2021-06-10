@@ -68,7 +68,7 @@ public:
   void SetSurrogateSignals( const SurrogateSignalType & surrSignalsIn );
   
   /** Define the dynamic images
-   *  \param Vector holding the pointer to the dynamic images. 
+   *  \param dynamicImagesIn Vector holding the pointers to the dynamic images. 
    */
   void SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn );
   

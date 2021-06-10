@@ -29,7 +29,7 @@ struct CommandLineOption{
   unsigned int numberOfComponents; ///< Number of elements expected after this flag on the command line. A switch will be 0, a single item 1, etc. 
   bool required;                   ///< Indicating if this parameters is essential to run the program. If a given parameter marked by required is not found on the command line a warning will be printed. 
   std::string description;         ///< Detailed description of the parameter. This will be used to generate the help message on the command line. 
-  std::string format;              ///< String describing the format of the parameter, e.g. <int>, <filename>, etc.
+  std::string format;              ///< String describing the format of the parameter, e.g. \<int\>, \<filename\>, etc.
 };
 
 
@@ -82,8 +82,10 @@ public:
    *
    *  \param argc Number of input arguments.
    *  \param argv Pointer ot character arrays.
+   *  \param allowedCommandLineOptionsIn A map with all allowed command line options. Keys are the flags, each value is a
+   *                                     \ref CommandLineOption. 
    */
-  CommandLineParser( int &argc, char **argv, std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn );
+  CommandLineParser( int &argc, char **argv, const std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn );
 
   /** Get an option associated with a certain flag.
    *

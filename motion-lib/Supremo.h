@@ -71,8 +71,9 @@ public:
 
 
   /** Set all dynamic images. 
-   *  Used to set a number of loaded dynamic images.
+   *  Used to set a number of externally loaded dynamic images.
    *  \param dynamicImagesIn Pointer to the dynamic images. 
+   *  \param numberOfDynamicImagesIn Number of dynamic images, i.e. length of the pointer above.  
    */
   void SetDynamicImages(nifti_image** dynamicImagesIn, int numberOfDynamicImagesIn);
 
@@ -164,7 +165,7 @@ public:
   }
 
   /** Set the number of pyramid levels on which a computation should be performed.
-  *  \param numberOfLevelsIn Total number of pyramid levels
+  *  \param numberOfLevelsToPerformIn Nmber of pyramid levels. Has to be equal or smaller than the value set with \ref SetNumberOfPyramidLevels(). 
   */
   inline void SetNumberOfPyramidLevelsToPerform( unsigned int numberOfLevelsToPerformIn )
   {
@@ -190,8 +191,9 @@ public:
   }
 
   /** Set the input RCM correspondence model. 
-   *  The values of this image/these images will be used as a starting point of the optimisation
-   *  \param inputCorrespondenceModelImages
+   *  The values of this image/these image(s) will be used as a starting point of the optimisation. Multiple RCMs can occur if the sliding 
+   *  transforation was used. 
+   *  \param inputRCMImgs Vector holding image pointers to the input respiratory correspondence model images.
    */
   inline void SetInputRCMImages(const std::vector<nifti_image*>& inputRCMImgs)
   {
@@ -245,9 +247,9 @@ private:
 
 
   /** Save the current MCR image to file. The string levelID info will be used to determine the output
-   *  \param reconImage The reconstructed image that will be save to the defined output directory. 
+   *  \param mcrImage The reconstructed image that will be saved to the defined output directory. 
    */
-  void SaveInterMCRToImage(nifti_image* reconIamge);
+  void SaveInterMCRToImage(nifti_image* mcrImage);
 
   unsigned int numberOfSurrogateSignals;          ///< Number of surrogate signals (per dynamic image)
   unsigned int numberOfDynamicImages;             ///< Total number of dynamic images

@@ -251,7 +251,7 @@ void ImagePyramid<VoxelType>::GenerateLevels(const nifti_image * const imageIn,
     if ( static_cast<unsigned int>( this->imageLevels[l]->ny ) <= minNumberOfVoxelsPerDim ) downsampleAxis[2] = false;
     if ( static_cast<unsigned int>( this->imageLevels[l]->nz ) <= minNumberOfVoxelsPerDim ) downsampleAxis[3] = false;
     
-    //if minVoxDim provided then only downsample if resampled vox in image <= minVoxDim
+    // if minVoxDim provided then only downsample if resampled vox in image <= minVoxDim
     if ( minVoxDim != nullptr )
     {
       if ( this->imageLevels[l]->dx * 2 > minVoxDim[l][0] ) downsampleAxis[1] = false;

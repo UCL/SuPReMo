@@ -59,7 +59,7 @@ public:
   virtual ~Transformation(){};
 
   /** Initialise the transformation and all internal parameters. 
-   *  \param referenceImageIn The reference image defining the space where the transformation will be defined.
+   *  \param level The level which is to be initialised.
    */
   virtual void InitialiseLevel(unsigned int level) = 0;
   
