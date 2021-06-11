@@ -104,6 +104,14 @@ jobs:
 
     - stage: documentation
       name: "Building and deploying documentation"
+      install:
+        git clone --depth=1 --single-branch --branch Release_1_9_1 https://github.com/doxygen/doxygen;
+        cd doxygen;
+        mkdir build;
+        cd build;
+        cmake -G "Unix Makefiles" ..;
+        make;
+        sudo make install
       script:
         # Need to point the html style header to the local so that it will be deployed
         - mkdir -p ./docu/html/style/
