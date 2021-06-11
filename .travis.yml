@@ -102,16 +102,16 @@ jobs:
       install:
         # Save the current directory
         - export src_dir=`pwd`
-        - echo "Building Doxygen 1.9.1"
-        - echo "source_dir - ${src_dir}"
-        - git clone --depth=1 --single-branch --branch Release_1_9_1 https://github.com/doxygen/doxygen
-        - cd doxygen
-        - export doxy_dir=`pwd`
-        - mkdir build
-        - cd build
-        - cmake -G "Unix Makefiles" ..
-        - make
-        - sudo make install
+        # - echo "Building Doxygen 1.9.1"
+        # - echo "source_dir - ${src_dir}"
+        # - git clone --depth=1 --single-branch --branch Release_1_9_1 https://github.com/doxygen/doxygen
+        # - cd doxygen
+        # - export doxy_dir=`pwd`
+        # - mkdir build
+        # - cd build
+        # - cmake -G "Unix Makefiles" ..
+        # - make
+        # - sudo make install
       script:
         # To build the docu, move back to the root of the repository
         - echo "source_dir - ${src_dir}"
@@ -128,7 +128,7 @@ jobs:
 
         # Remove the local doxyfile again so that we end up with a clean git repo.
         - rm Doxyfile.loc
-        - rm -rf $doxy_dir
+        # - rm -rf $doxy_dir
       
       deploy:
         provider: pages
