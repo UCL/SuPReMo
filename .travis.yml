@@ -15,7 +15,7 @@
 
 
 # Most light-weight
-dist: trusty
+dist: focal
 
 language: cpp
 
