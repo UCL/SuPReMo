@@ -1,7 +1,7 @@
 # Transition from nifty-reg resp {#transitionfromregresp}
 
 If you have used the previous implementation of the generalised image registration and motion-modelling framework called *Nifty-Reg-Resp* 
-then you will need to adapte the commandline parameters according to the table below. SuPReMo has an extended functionality over  *reg-resp*. 
+then you will need to adapt the command line parameters according to the table below. SuPReMo has extended functionality over  *reg-resp*. 
 
 Parameters: 
 

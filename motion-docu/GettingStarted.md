@@ -15,14 +15,14 @@ on your system, a minimum of version 3.3 is required by the CMakeLists.txt.
 ### Nifty-Reg
 
 During the build step SuPReMo links to the libraries of  *nifty-reg* which is available 
-[here](https://github.com/KCL-BMEIS/niftyreg) and the build will be described below
+[here](https://github.com/KCL-BMEIS/niftyreg) and the build will be described below.
 
 
 ## Building SuPReMo on a Linux system
 
 The steps below describe how to build SuPReMo (and nifty-reg) on a Linux system. We perform an out-of source 
-build for both, nifty-reg and SuPReMo. Choose a location where to download and build the software packages. 
-We will name this `WORK_DIR` in the instructions below
+build for both, nifty-reg and SuPReMo. Choose a location where to download and build the software packages, 
+we will name this `WORK_DIR` in the instructions below.
 
 ### Building nifty-reg
 
@@ -184,11 +184,6 @@ Test project WORK_DIR/SuPReMo_build
 Total Test time (real) =  47.75 sec
 
 ```
-
-
-
-
-
 
 
 
