@@ -29,10 +29,12 @@ and a *Cancer Research UK* Centres Network Accelerator Award Grant (A21993) to t
 
 ## Getting started
 
-Below is a list of additional pages that will help you to get started with SuPReMo. 
+Below is a list of additional pages that will help you to get started with SuPReMo. These links will get you to the correspomding pages
+of the documentation. 
 
 
-* For mor information on how to build your own version and to get started with SuPReMo see \ref gettingstarted and 
-* For a more in-depth background see \ref background "the background section". 
-* If you have used the previous implementation of the generalised framework called *nifty-reg-resp*, then you will find 
-\ref transitionfromregresp "information on how to make the transition here".
+* For more information on how to build your own version and to get started with SuPReMo 
+see [getting started with SuPReMo](https://github-pages.ucl.ac.uk/SuPReMo/gettingstarted.html).
+* For an in-depth background  see [the background section](https://github-pages.ucl.ac.uk/SuPReMo/background.html). 
+* If you have used the previous implementation of the generalised framework called *nifty-reg-resp*, 
+then you will find [information on how to make the transition here](https://github-pages.ucl.ac.uk/SuPReMo/transitionfromregresp.html).
