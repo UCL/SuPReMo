@@ -98,31 +98,14 @@ jobs:
 
     - stage: documentation
       name: "Building and deploying documentation"
-      install:
-        # Save the current directory
-        - export src_dir=`pwd`
-        # - echo "Building Doxygen 1.9.1"
-        # - echo "source_dir - ${src_dir}"
-        # - git clone --depth=1 --single-branch --branch Release_1_9_1 https://github.com/doxygen/doxygen
-        # - cd doxygen
-        # - export doxy_dir=`pwd`
-        # - mkdir build
-        # - cd build
-        # - cmake -G "Unix Makefiles" ..
-        # - make
-        # - sudo make install
       script:
-        # To build the docu, move back to the root of the repository
-        - echo "source_dir - ${src_dir}"
-        - cd ${src_dir}
-        
         # Need to point the html style header to the local so that it will be deployed
         - mkdir -p ./docu/html/style/
-        - cp utilities/doxygenStyle/* ./docu/html/style/
+        - cp motion-docu/doxygenStyle/* ./docu/html/style/
 
         # Work on a copy of the Doxyfile and remove this later
         - cp ./Doxyfile ./Doxyfile.loc
-        - sed -i 's/.\/utilities\/doxygenStyle\//.\/docu\/html\/style\//g' ./Doxyfile.loc
+        - sed -i 's/.\/motion-docu\/doxygenStyle\//.\/docu\/html\/style\//g' ./Doxyfile.loc
         - doxygen Doxyfile.loc
 
         # Remove the local doxyfile again so that we end up with a clean git repo.
@@ -134,7 +117,6 @@ jobs:
         skip_cleanup: true
         github_token: $GH_REPO_PRV_TOKEN
         local_dir: docu/html
-        # Uncomment once initial documentation is complete
         on:
           branch: b0005_docu
 
