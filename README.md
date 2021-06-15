@@ -1,37 +1,40 @@
-# SuPReMo
+# SuPReMo - Surrogate Parametrised Respiratory Motion Modelling    {#mainpage}
 
-Software implementing the unified motion modelling and image registation 
-framework as described by McClelland et al. 
+Current travis build status  of main branch (Linux build and documentation): [![Build Status](https://travis-ci.com/UCL/SuPReMo.svg?token=ryYEyvSMfhuCX4W6bRRD&branch=main)](https://travis-ci.com/UCL/SuPReMo)
 
-# Transition from nifty-reg resp
+## Introduction 
 
-**Note**: The software is still in its early stages and may show some unusual 
-or unwanted behaviour. Please report this by either emailing me or creating an 
-issue. Thanks!
+SuPReMo implements the unified motion modelling and image registation 
+framework as proposed by [Jamie McClelland et al.](https://doi.org/10.1088/1361-6560/aa6070) and 
+was developed by Bjoern Eiben  and the Radiotherapy Image Computing Group at the Centre for Medical Image Computing, 
+University College London, UK. 
+
+The source code is available on [github](https://github.com/UCL/SuPReMo) and the [documentation](https://github-pages.ucl.ac.uk/SuPReMo/) is 
+hosted on the corresponding github-pages.
 
 
-Parameters: 
+## Getting started
 
-| reg_resp       | runSupremo    | Pattern       | Description                                                                         |
-|----------------|---------------|---------------|-------------------------------------------------------------------------------------|
-| -static        | -refState     | [fName]       | Reference state/static image                                                        |
-| -dynamic       | -dynamic      | [int] [fName] | File containing list of dynamic images and the total number of dynamic images       |
-| -surr          | -surr         | [int] [fName] | File containting the surrogate signal and the number of signals used                |
-| -dType         | -dType        | [int]         | Dynamic image data type [0] = full res images, [1] = low res images                 |
-| -defSpace      | -defSpace     | [fName]       | File name of image that defines the space of the deformed iamges                    |
-| -mcrType       | -mcrType      | [int]         | Motion compensation [0] none, [1] average weighting, [2] SR, restart, [3] SR update |
-| -maxMCRIt      | -maxMCRIt     | [int]         | Number of iterations used for iterative MCR method                                  |
-| -rcm           | -outRCM       | [fName]       | Path to save the respratory correspondence model (RCM) to                           |
-| -saveDyn       | -outSimDyn    | [fName]       | Path to save the simulated dynamic images to                                        |  
-| -saveMCR       | -outMCR       | [fName]       | Path to save the motion-compensated reconstruction images to                        |  
-| -saveInterMCRs | -outInterMCR  | [fName]       | Path to save the motion-compensated reconstruction images to                        |  
-|                | -outInterGrad | [fName]       | Path to save the intermediate gradient to (experimental)                            |  
-| -sx            | -sx           | [float]       | Final grid spacing along x axis (in mm if positive, in voxels if negative)          |
-| -sy            | -sy           | [float]       | Final grid spacing along y axis (in mm if positive, in voxels if negative)          |  
-| -sz            | -sz           | [float]       | Final grid spacing along z axis (in mm if positive, in voxels if negative)          |  
-| -be            | -be           | [float]       | Bending energy constraint weight                                                    |  
-|                | -le           | [float]       | Linear energy constraint weight (experimental)                                      |  
-| -maxSwitchIt   | -maxSwitchIt  | [int]         | Maximum number of switches between fitting and reconstruction                       |
-| -ln            | -ln           | [int]         | Number of pypramid levels generated                                                 |  
-| -lp            | -lp           | [int]         | Number of pypramid levels used                                                      |  
-| -maxFitIt      | -maxFitIt     | [int]         | Number of iterations to fit the motion model                                        |  
+Below is a list of additional pages that will help you to get started with SuPReMo. These links will get you to the correspomding pages
+of the [documentation](https://github-pages.ucl.ac.uk/SuPReMo/). 
+
+
+* For information on how to build your own version and to get started with SuPReMo 
+see [getting started with SuPReMo](https://github-pages.ucl.ac.uk/SuPReMo/gettingstarted.html).
+* For an in-depth background  see [the background section](https://github-pages.ucl.ac.uk/SuPReMo/background.html). 
+* If you have used the previous implementation of the generalised framework called *nifty-reg-resp*, 
+then you will find [information on how to make the transition here](https://github-pages.ucl.ac.uk/SuPReMo/transitionfromregresp.html).
+
+
+## Funding acknowledgements
+
+The development of this software package was supported by *Cancer Research UK* under the Programme C33589/A19908, 
+and a *Cancer Research UK* Centres Network Accelerator Award Grant (A21993) to the ART-NET Consortium. 
+
+
+## License
+
+This software is published under the *BSD 3-Clause License* as defined in the LICENSE.txt file of 
+the source code and most importantly is distributed WITHOUT ANY WARRANTY; without even 
+the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     
+

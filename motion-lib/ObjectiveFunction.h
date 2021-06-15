@@ -77,7 +77,7 @@ public:
 
   /** Calculate the gradient for the input parameters and return an image with the gradient
    *  \param parametersIn Pointer to the parameters that will be fed into the correspondence model
-   *  \param 
+   *  \param normaliseGradient Set to true of the gradient should be normalised. Also see \ref GetGradient().
    */
   std::vector<nifti_image*> GetGradientAsImage( const PrecisionType* parametersIn, bool normaliseGradient = false );
 
@@ -105,7 +105,7 @@ public:
   /** Set the object that measures the similarity between images.
    *  \param imageSimilarityIn Image similarity object. 
    */
-  void SetSimilarityMeasure( const std::shared_ptr<ImageSimilarity>& simlarityIn );
+  void SetSimilarityMeasure( const std::shared_ptr<ImageSimilarity>& imageSimilarityIn);
 
 
   /** Set the surrogate signal
@@ -129,7 +129,7 @@ public:
 
   /** Set the image acquisition object. Has to implement functionality to simulate the acquisition process and to calculate the 
    *  adjoint of that process. 
-   *  \imageAcquisitionIn Shared pointer to the image acquisition object.
+   *  \param imageAcquisitionIn Shared pointer to the image acquisition object.
    */
   void SetImageAcquisition( const std::shared_ptr<ImageAcquisition>& imageAcquisitionIn );
 

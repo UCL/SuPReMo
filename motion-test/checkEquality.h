@@ -21,7 +21,7 @@
 #include "Supremo.h"
 
 
-/** Test 4x4 matrices for equality element by element
+/** Test 4x4 matrices for equality element by element. Matrix size of 4x4 is assumed. 
  * \param mat1 First matrix
  * \param mat2 Second matrix
  */
@@ -45,8 +45,10 @@ int checkMat44Equality( const mat44& mat1, const mat44& mat2 )
  *  Items tested are:
  *   - nx, ny, nz
  *   - dx, dy, dz
-  *   - sform_code, qform_code
+ *   - sform_code, qform_code
  *   - sto_ijk, qto_ijk, sto_xyz, qto_xyz
+ * sform and qform matrices are only checked if sform and qform codes are unequal to zero respectively. 
+ *
  * \param imageToTest Pointer to the nifti image that is compared to the expected outcome
  * \param expectedImage The expected outcome image
  */
@@ -138,13 +140,16 @@ int checkImageGeometryEquality( nifti_image* imageToTest, nifti_image* expectedI
 
 
 /** Test images for equality
- *  The test will complete the image geometry test and in addition will test
+ *  The test will complete the image geometry test and in addition will test the contents. Currently only 
+ *  three dimensional images are supported. 
  *  Items tested are:
  *   - nbyper
  *   - voxel-by-voxel comparision
-  * \param imageToTest Pointer to the nifti image that is compared to the expected outcome
- * \param expectedImage The expected outcome image
- * \param allowedVoxelDeviation Allow for numerical inaccuracies
+ * \param imageToTest Pointer to the nifti image that is compared to the expected outcome.
+ * \param expectedImage The expected outcome image. 
+ * \param allowedVoxelDeviation Allow for numerical inaccuracies. 
+ * \param ignoreBoundaySize Ignore differences at the border for the given size. 
+ * \param maxAllowedNumberOfDeviations Allow a certain deviations up to the given number. 
  */
 template<class VoxelType>
 int checkImageEquality( nifti_image* imageToTest, 
@@ -259,7 +264,14 @@ int checkImageEquality( nifti_image* imageToTest,
 
 
 
-/** Test if two float values are almost equal
+/** Test if two float values are almost equal. 
+ *  First checks if the absolute difference is within the given maxDiff range. If this
+ *  is not the case, the relative difference will be checked. 
+ * 
+ *  \param A first value, compared to second
+ *  \param B second value, compared to first
+ *  \param maxDiff The maximum absolute difference allowed between values A and B. 
+ *  \param maxRelDiff The maximum relative difference between values A and B
  */
 bool AlmostEqualRelativeAndAbs( float A, float B,
   float maxDiff, float maxRelDiff = FLT_EPSILON )

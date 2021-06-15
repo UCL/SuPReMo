@@ -23,26 +23,56 @@
 #include <vector>
 #include "Supremo.h"
 
+/** Structure holding the basic information about a single command line option. 
+ */
 struct CommandLineOption{
-  unsigned int numberOfComponents; ///< Number of elements expected after this flag on the command line
-  bool required;                   ///< Indicating if this parameters is essential
-  std::string description;         ///< Description of the parameters
+  unsigned int numberOfComponents; ///< Number of elements expected after this flag on the command line. A switch will be 0, a single item 1, etc. 
+  bool required;                   ///< Indicating if this parameters is essential to run the program. If a given parameter marked by required is not found on the command line a warning will be printed. 
+  std::string description;         ///< Detailed description of the parameter. This will be used to generate the help message on the command line. 
+  std::string format;              ///< String describing the format of the parameter, e.g. \<int\>, \<filename\>, etc.
 };
 
 
 /** Function to split a string by a delimiter into a vector of strings. Items will only be added if they are not empty. 
- *  I.e. two commas will not add an empty element. 
+ *  I.e. if the delimiter is a comma a string containing two commas will not add an empty element. 
  * 
- *  \param stringToSplitIn string which will be split
- *  \param delimiter Delimiter which will be used to split the string
+ *  \param stringToSplitIn The string which will be split by the given delimiter
+ *  \param delimiter       Delimiter which will be used to split the string
  */
 std::vector<std::string> splitStringbyDelimiter(const std::string & stringToSplitIn, const std::string & delimiter);
 
 
+/** Function to print a selection of parameters. 
+ *  The parameters are assumed to belong to a semantic group of items such as input and put. This can be specified in the 
+ *  section heading. The final format will be looking like this:
+ *  \code
+ *    Section heading
+ *    ~~~~~~~~~~~~~~~
+ *    -opt1 <format> The description will go here and will break after
+ *                   the maximum width was reached. 
+ *    -opt2 <format> Alterantively a backslash-n
+ *                   can be inserted in the descriptionb to force a line
+ *                   break. 
+ * 
+ *    |<----------------------------maxWidth---------------------------->|
+ *  \endcode
+ * 
+ *  \param commandLineOptions The map of all commandline options. The format and description will be used to generate the output. 
+ *  \param optionSectionHeading A string that will be printed as a heading above the parameters
+ *  \param maxWidth The total width of the line printed. A warning only may be printed if the width is not sufficient to accomodate 
+ *                  the option and the format (i.e. no space left for the description). The maximum width may be exceeded if the first 
+ *                  word of the description is already too long. 
+ *  \param optionsToPrint A vector of option keys to be looked up in the given commandLineOptions. If present the format and description
+ *                        of the commandLineOptions will be used to generate the output as shown above. 
+ */
+void printFormattedCommandLineOptions(const std::map<std::string, CommandLineOption>& commandLineOptions, 
+  const std::string& optionSectionHeading, const unsigned int maxWidth, const std::vector<std::string>& optionsToPrint );
+
+
 /** Class implementing a simple command line parser
- * Command line parser (heavily) adapted from 
- * http://stackoverflow.com/questions/865668/ddg#868894
- * credit to iain.
+ *  Command line parser (heavily) adapted from 
+ *  http://stackoverflow.com/questions/865668/ddg#868894
+ *  credit to iain.
  */
 class CommandLineParser{
 public:
@@ -52,8 +82,10 @@ public:
    *
    *  \param argc Number of input arguments.
    *  \param argv Pointer ot character arrays.
+   *  \param allowedCommandLineOptionsIn A map with all allowed command line options. Keys are the flags, each value is a
+   *                                     \ref CommandLineOption. 
    */
-  CommandLineParser( int &argc, char **argv, std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn );
+  CommandLineParser( int &argc, char **argv, const std::map<std::string, CommandLineOption> & allowedCommandLineOptionsIn );
 
   /** Get an option associated with a certain flag.
    *
@@ -99,8 +131,15 @@ public:
    */
   std::string getCommandLine() const;
 
+  /**
+   * Returs true if all required parameters were set in the command line, false otherwise. 
+   */
+  bool getAllReqreuiredParametersSet() const { return this->allRequiredParametersSet; };
+
+
 private:
-  std::vector <std::string> tokens; ///< vector with individual command line entries
-  std::string executableName;       ///< the executable name contained on the command line
+  std::vector <std::string> tokens; ///< Vector with individual command line entries
+  std::string executableName;       ///< The executable name contained on the command line
+  bool allRequiredParametersSet;    ///< Indicates if all required parameters were found. Use the getter funciton \ref getAllReqreuiredParametersSet().
 };
 

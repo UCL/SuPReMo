@@ -1155,10 +1155,12 @@ double SlidingTransformation::CalculateGapOverlapConstraintTerm()
 
 
 
-
+//------------------------------------------------------------------------------------
+// SlidingTransformation::TransformedSignedDistMapsCanBeUsedForConstraintCalculations
+//------------------------------------------------------------------------------------
 bool SlidingTransformation::TransformedSignedDistMapsCanBeUsedForConstraintCalculations()
 {
-  // Do a simple geometry check between the exisiting transformed singed distance map
+  // Do a simple geometry check between the exisiting transformed singed distance map and the image currently defining the space
   if (nullptr != this->signedDistMapImageTransformedA
     && this->CheckImageGeometryEquality( this->curDefSpaceImage, this->signedDistMapImageTransformedA ))
   {

@@ -14,87 +14,110 @@
 #  ====================================================================================================   
 
 
-# Most light-weight
-dist: trusty
-
-# Allow spin up of container instead of asking for full VM
-sudo: false
+dist: focal
 
 language: cpp
 
 addons:
   apt:
-    sources:
-      - ubuntu-toolchain-r-test
     packages:
       - g++-7
+      - doxygen
+      - doxygen-latex
+      - graphviz
 
-before_script:
-  # Export variables used during building and testing
-  - export src_dir=`pwd`
-  - export build_dir="${src_dir}/build"
-  - export dep_dir="${build_dir}/dependencies"
-  - export niftyreg_source_dir="${dep_dir}/niftyreg_source"
-  - export niftyreg_install_dir="${dep_dir}/niftyReg_install"
-  - export niftyreg_build_dir="${dep_dir}/niftyReg_build"
-  - export supremo_build_dir="${build_dir}/supremo_build"
-  - export supremo_install_dir="${build_dir}/supremo_install"
-  # Printing build information
-  - echo "Building SuPReMo"
-  - echo "source_dir           - ${src_dir}"
-  - echo "Dependencies"
-  - echo "============"
-  - echo "build_dir           - ${build_dir}"
-  - echo "dep_dir              - ${dep_dir}"
-  - echo "niftyreg source dir  - ${niftyreg_source_dir}"
-  - echo "niftyreg build dir   - ${niftyreg_build_dir}"
-  - echo "niftyreg install dir - ${niftyreg_install_dir}"
-  - echo "supremo"
-  - echo "========="
-  - echo "supremo build dir    - ${supremo_build_dir}"
-  - echo "supremo install dir  - ${supremo_install_dir}"
+jobs:
+  include: 
+    - stage: build and test
+      name: "Building dependencies and SuPReMo then running tests"
+      script:
+        # Export variables used during building and testing
+        - export src_dir=`pwd`
+        - export build_dir="${src_dir}/build"
+        - export dep_dir="${build_dir}/dependencies"
+        - export niftyreg_source_dir="${dep_dir}/niftyreg_source"
+        - export niftyreg_install_dir="${dep_dir}/niftyReg_install"
+        - export niftyreg_build_dir="${dep_dir}/niftyReg_build"
+        - export supremo_build_dir="${build_dir}/supremo_build"
+        - export supremo_install_dir="${build_dir}/supremo_install"
+        # Printing build information
+        - echo "Building SuPReMo"
+        - echo "source_dir           - ${src_dir}"
+        - echo "Dependencies"
+        - echo "============"
+        - echo "build_dir           - ${build_dir}"
+        - echo "dep_dir              - ${dep_dir}"
+        - echo "niftyreg source dir  - ${niftyreg_source_dir}"
+        - echo "niftyreg build dir   - ${niftyreg_build_dir}"
+        - echo "niftyreg install dir - ${niftyreg_install_dir}"
+        - echo "supremo"
+        - echo "========="
+        - echo "supremo build dir    - ${supremo_build_dir}"
+        - echo "supremo install dir  - ${supremo_install_dir}"
 
-script:
-  # Get the version information
-  - echo `cmake --version`
+        # Get the version information
+        - echo `cmake --version`
 
-  # Build nifty reg dependency
-  - echo "Building dependency > niftyreg"
-  - echo "=============================="
-  - mkdir -p ${dep_dir}
-  - cd ${dep_dir}
-  - git clone https://github.com/KCL-BMEIS/niftyreg.git ${niftyreg_source_dir}
-  - mkdir -p ${niftyreg_build_dir}
-  - mkdir -p ${niftyreg_install_dir}
-  - cd ${niftyreg_build_dir}
-  # Configure cmake for nifty reg
-  - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake 
-      -DBUILD_ALL_DEP:BOOL=ON 
-      -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
-      -DCMAKE_INSTALL_PREFIX:STRING=${niftyreg_install_dir} 
-      ${niftyreg_source_dir}
-  - cmake --build . -- -j2
-  - make install
-  
-  # Build SuPReMo
-  - echo "Building > SuPReMo"
-  - echo "===================="
-  - mkdir -p ${supremo_build_dir}
-  - mkdir -p ${supremo_install_dir}
-  - cd ${supremo_build_dir}
-  # Configure SuPReMo with the required niftyreg dependency
-  - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake 
-        -DNiftyReg_DIR:STRING=${niftyreg_install_dir} 
-        -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
-        -DCMAKE_INSTALL_PREFIX:STRING=${supremo_install_dir} 
-        -DBUILD_TESTING:BOOL=ON
-        ${src_dir}
-  - cmake --build . -- -j2
-  - make install
-  # Run the tests
-  - cd ${supremo_build_dir}
-  - ctest --output-on-failure -C Release
+        # Build nifty reg dependency
+        - echo "Building dependency > niftyreg"
+        - echo "=============================="
+        - mkdir -p ${dep_dir}
+        - cd ${dep_dir}
+        - git clone https://github.com/KCL-BMEIS/niftyreg.git ${niftyreg_source_dir}
+        - mkdir -p ${niftyreg_build_dir}
+        - mkdir -p ${niftyreg_install_dir}
+        - cd ${niftyreg_build_dir}
+        # Configure cmake for nifty reg
+        - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake 
+            -DBUILD_ALL_DEP:BOOL=ON 
+            -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
+            -DCMAKE_INSTALL_PREFIX:STRING=${niftyreg_install_dir} 
+            ${niftyreg_source_dir}
+        - cmake --build . -- -j2
+        - make install
 
+        # Build SuPReMo
+        - echo "Building > SuPReMo"
+        - echo "===================="
+        - mkdir -p ${supremo_build_dir}
+        - mkdir -p ${supremo_install_dir}
+        - cd ${supremo_build_dir}
+        # Configure SuPReMo with the required niftyreg dependency
+        - CXX=/usr/bin/g++-7 CC=/usr/bin/gcc-7 cmake 
+              -DNiftyReg_DIR:STRING=${niftyreg_install_dir} 
+              -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
+              -DCMAKE_INSTALL_PREFIX:STRING=${supremo_install_dir} 
+              -DBUILD_TESTING:BOOL=ON
+              ${src_dir}
+        - cmake --build . -- -j2
+        - make install
 
+        # Run the tests
+        - cd ${supremo_build_dir}
+        - ctest --output-on-failure -C Release
+
+    - stage: documentation
+      name: "Building and deploying documentation"
+      script:
+        # Need to point the html style header to the local so that it will be deployed
+        - mkdir -p ./docu/html/style/
+        - cp motion-docu/doxygenStyle/* ./docu/html/style/
+
+        # Work on a copy of the Doxyfile and remove this later
+        - cp ./Doxyfile ./Doxyfile.loc
+        - sed -i 's/.\/motion-docu\/doxygenStyle\//.\/docu\/html\/style\//g' ./Doxyfile.loc
+        - doxygen Doxyfile.loc
+
+        # Remove the local doxyfile again so that we end up with a clean git repo.
+        - rm Doxyfile.loc
+        # - rm -rf $doxy_dir
+      
+      deploy:
+        provider: pages
+        skip_cleanup: true
+        github_token: $GH_REPO_PRV_TOKEN
+        local_dir: docu/html
+        on:
+          branch: main
 
 

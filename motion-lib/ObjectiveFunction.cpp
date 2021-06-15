@@ -424,8 +424,6 @@ std::vector<nifti_image*> ObjectiveFunction::GetGradientAsImage( const Precision
   // Clear the memory
   free( gradData );
   
-
-
   return outGradientImages;
 }
 
