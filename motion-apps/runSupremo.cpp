@@ -115,7 +115,7 @@ int main( int argc, char *argv[] )
   std::cout << parser->getCommandLine() << std::endl;
 
   // Check if help is required 
-  if (parser->cmdOptionExists( "-h" ) || parser->getAllReqreuiredParametersSet())
+  if (parser->cmdOptionExists( "-h" ) || !parser->getAllReqreuiredParametersSet())
   {
     // Required: 
     std::vector<std::string> opts;
