@@ -107,7 +107,7 @@ int main( int argc, char *argv[] )
   commandLineOptions["-lp"]           = { 1, false, "Only perform processing on the first lp levels [ln]", "<int>" };
   commandLineOptions["-maxFitIt"]     = { 1, false, "Maximum number of respiratory correspondence model fitting iterations [300]", "<int>" };
   // Help/information
-  commandLineOptions["-h"]            = { 0, false, "Print help message.", "" };
+  commandLineOptions["-h"]            = { 0, false, "Print help message and exit.", "" };
   
 
   // Parse the command line
@@ -115,7 +115,7 @@ int main( int argc, char *argv[] )
   std::cout << parser->getCommandLine() << std::endl;
 
   // Check if help is required 
-  if (parser->cmdOptionExists( "-h" ) || parser->getAllReqreuiredParametersSet())
+  if (parser->cmdOptionExists( "-h" ) || !parser->getAllReqreuiredParametersSet())
   {
     // Required: 
     std::vector<std::string> opts;
