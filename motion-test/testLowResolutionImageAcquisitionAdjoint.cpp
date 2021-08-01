@@ -91,7 +91,7 @@ int main( int argc, char **argv )
    std::shared_ptr<LowResolutionImageAcquisition> lowResAcquisition = std::make_shared< LowResolutionImageAcquisition >();
 
    // Calculate the adjoint image and weights
-   lowResAcquisition->CalculateAdjoint( fullResolultionImage, dynamicImage );
+   lowResAcquisition->CalculateAdjoint( fullResolultionImage, dynamicImage, 0 );
    nifti_image* generatedAdjointImage = lowResAcquisition->GetImageAfterAdjoint();
    nifti_image* generatedAdjointWeightsImage = lowResAcquisition->GetWeightsImageAfterAdjoint();
 

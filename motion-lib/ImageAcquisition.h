@@ -34,24 +34,38 @@ public:
    */
   virtual ~ImageAcquisition();
    
-  /** Simulate the image acquisition. Needs to be implemented by derived class depending on the image acquisition method.
+  /** Simulate the image acquisition also known as a forward-projection depending on the imaging modality. Needs to be implemented by derived class 
+   *  depending on the image acquisition method. The returned image should be allocated by this function and deleted after use externally(see \c return ). 
+   *
+   *  \param imgInFullImgSpace Pointer to nifti image holding the image in full image space. 
+   *  \param imgInAcquisitionSpace Pointer to the nifti image in acquisition space. 
+   *  \param dynamicImageTimePoint The dynamic image time point in case time-dependent meta data needs to be used internally.
+   *  \return Pointer to the simulated dyanmic image. This image will be allocated by this function and is expected to be deleted after usaage using \c nifti_image_free() . 
    */
-  virtual nifti_image* SimulateImageAcquisition( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace ) = 0;
+  virtual nifti_image* SimulateImageAcquisition( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace, unsigned int dynamicImageTimePoint ) = 0;
   
-  /** Calculate the adjoint of the image acquisition. Needs to be implementd by derived class according to the image acquisition method.
+  /** Calculate the adjoint of the image acquisition - also known as the back-projection for some imaging modalities. Needs to be implementd by derived 
+   *  class according to the image acquisition method. The adjoint image will be allocated internally and kept as a member variable. To access it, use 
+   *  \ref GetImageAfterAdjoint. This image will be deleted by this object. 
+   * 
+   *  \param imgInFullImgSpace Pointer to nifti image holding the image in full image space. 
+   *  \param imgInAcquisitionSpace Pointer to the nifti image in acquisition space. 
+   *  \param dynamicImageTimePoint The dynamic image time point in case time-dependent meta data needs to be used internally.
    */
-  virtual void CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace ) = 0;
+  virtual void CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace, unsigned int dynamicImageTimePoint) = 0;
   
   /** Allocate an empty image in full image space that has the minimum required size to simulate the image acquisition. 
    *  This allows, for instance, efficient warping of the image in full image space without the need to warp the full 
    *  sized image. This has to be implemented by a derived class. This was usually used as the "warped" image in reg-resp.
+   * 
    *  \param imgInFullImgSpace The full sized image
    *  \param imgInAcquisitionSpace The image in acquisition space  
-   *  \todo Decide how to handle the image deallocation
+   *  \param dynamicImageTimePoint Time point of the dynamic image (if used).
    */
-  virtual nifti_image* AllocateMinimumSizeImgInFullImgSpace( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace ) = 0;
+  virtual nifti_image* AllocateMinimumSizeImgInFullImgSpace( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace, unsigned int dynamicImageTimePoint) = 0;
   
-  /** Get a pointer to the image after adjoint
+  /** Get a pointer to the image after adjoint (after the back-projection)
+   *  \return Returns a pointer to the nifti image calculated by the function \ref CalculateAdjoint. 
    */
   virtual nifti_image* GetImageAfterAdjoint();
   
@@ -69,6 +83,7 @@ protected:
   nifti_image* imageAfterAdjoint;
   nifti_image* weightsImageAfterAdjoint;
   
-  nifti_image* curImageInAcquisitionSpace;
-  nifti_image* curImageInFullImgSpace;
+  nifti_image* curImageInAcquisitionSpace;  ///< Current image in acquisition space
+  nifti_image* curImageInFullImgSpace;      ///< Current image in full image space
+  unsigned int curDynamicImageTimePoint;    ///< Current dynamic image time point
 };

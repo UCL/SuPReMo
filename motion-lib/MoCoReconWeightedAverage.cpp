@@ -69,7 +69,7 @@ void MoCoReconWeightedAverage::Update()
     std::shared_ptr<Transformation> curTrafo = this->correspondenceModel->GetTransformationFromSurrogateSignal( this->surrogateSignals[i] );
 
     // Get the adjoint of the acquired image. 
-    this->imageAcquisition->CalculateAdjoint( this->reconstructionGeometryImage, this->dynamicImages[i] );
+    this->imageAcquisition->CalculateAdjoint( this->reconstructionGeometryImage, this->dynamicImages[i], i );
 
     // Use the implementation of Transformation class to calculate the adjoint/push transformation
     curTrafo->TransformImageAdjoint( 

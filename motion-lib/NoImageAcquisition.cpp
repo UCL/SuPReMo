@@ -41,7 +41,7 @@ NoImageAcquisition::~NoImageAcquisition()
 //----------------------------------------------
 // NoImageAcquisition::SimulateImageAcquisition
 //----------------------------------------------
-nifti_image* NoImageAcquisition::SimulateImageAcquisition( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace )
+nifti_image* NoImageAcquisition::SimulateImageAcquisition( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace, unsigned int dynamicImageTimePoint )
 {
   // Since no image acqusition is simulated, the image in full space is simply returned. 
   return imgInFullImgSpace;
@@ -53,11 +53,12 @@ nifti_image* NoImageAcquisition::SimulateImageAcquisition( nifti_image * imgInFu
 //--------------------------------------
 // NoImageAcquisition::CalculateAdjoint
 //--------------------------------------
-void NoImageAcquisition::CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace )
+void NoImageAcquisition::CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace, unsigned int dynamicImageTimePoint )
 {
-  // The current image in acquisition space is remembered for the allocation of the image after adjoint
+  // The current image in acquisition and full image space as well as the dynamic image time point is remembered for the allocation of the image after adjoint
   this->curImageInAcquisitionSpace = imgInAcquisitionSpace;
   this->curImageInFullImgSpace = imgInFullImgSpace;
+  this->curDynamicImageTimePoint = dynamicImageTimePoint;
   
   // Allocate the image after applying the adjoint and the corresponding weights image
   this->AllocateImageAfterAdjoint();
@@ -80,7 +81,7 @@ void NoImageAcquisition::CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti
 //----------------------------------------------------------
 // NoImageAcquisition::AllocateMinimumSizeImgInFullImgSpace
 //----------------------------------------------------------
-nifti_image * NoImageAcquisition::AllocateMinimumSizeImgInFullImgSpace( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace )
+nifti_image * NoImageAcquisition::AllocateMinimumSizeImgInFullImgSpace( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace, unsigned int dynamicImageTimePoint )
 {
   // If no image acquisition is simulated, the allocated image has to have the size of the image in acquisition space.  
   nifti_image* minSizedImgInFullImgSpace;
@@ -106,7 +107,7 @@ void NoImageAcquisition::AllocateImageAfterAdjoint()
   
   // Allocate an image of the same size and geometry as the acquired image
   // Use the implemented, exposed functionality to allocate the image after adjoint to avoid code duplication
-  this->imageAfterAdjoint = this->AllocateMinimumSizeImgInFullImgSpace( this->curImageInFullImgSpace, this->curImageInAcquisitionSpace );
+  this->imageAfterAdjoint = this->AllocateMinimumSizeImgInFullImgSpace( this->curImageInFullImgSpace, this->curImageInAcquisitionSpace, this->curDynamicImageTimePoint );
 
   /// Note: This implementation is different to the reference implementaiton in reg_resp which adjusted the image size of the adjoint 
   ///       regardless of which acquisition simulation was selected. This could lead to a segmentation fault in some specific cases.

@@ -116,9 +116,9 @@ void MoCoReconSuperResolutionIBP::Update()
       // The forward projection simulates the image acquisition and gets us to the acquisition space
       //
       // Warp the current reconstructed image, then project it into the acquisition (dynamic) space
-      nifti_image* curMinSizeWarpedImageInFullImgSpace = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->reconstructedImage, curDynamicImg );
+      nifti_image* curMinSizeWarpedImageInFullImgSpace = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->reconstructedImage, curDynamicImg, n );
       curTrafo->TransformImage( this->reconstructedImage, curMinSizeWarpedImageInFullImgSpace );
-      nifti_image* simulatedDynamicImage = this->imageAcquisition->SimulateImageAcquisition( curMinSizeWarpedImageInFullImgSpace, curDynamicImg );
+      nifti_image* simulatedDynamicImage = this->imageAcquisition->SimulateImageAcquisition( curMinSizeWarpedImageInFullImgSpace, curDynamicImg, n );
 
       // Allocate and calculate the differnce image and SSD between the simulated acquired and acquired iamge
       // The difference image is only used locally, so no need to make it a member of this class.
@@ -160,7 +160,7 @@ void MoCoReconSuperResolutionIBP::Update()
       // Now bring the difference image into the full image spcae (back-projection)
 
       // Use the acquisition to calcualte the image after the adjoint operation
-      this->imageAcquisition->CalculateAdjoint( this->reconstructionGeometryImage, differenceImage );
+      this->imageAcquisition->CalculateAdjoint( this->reconstructionGeometryImage, differenceImage, n );
 
       // Then transform it using the push interpolation (which accummulates the result in the destination image)
       curTrafo->TransformImageAdjoint( this->imageAcquisition->GetImageAfterAdjoint(), 

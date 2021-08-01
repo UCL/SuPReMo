@@ -512,13 +512,13 @@ std::vector<nifti_image*> Supremo::SimulateDynamicImages()
     reg_tools_changeDatatype<VoxelType>( curDynImg );
 
     // Use the image acquisition class to define the minimum sized image that we need to define the 
-    nifti_image* curMinSizeImgInFullImgSpace = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->finalMoCoReconImage, curDynImg );
+    nifti_image* curMinSizeImgInFullImgSpace = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->finalMoCoReconImage, curDynImg, iImg );
     
     // Use the transformation to warp the final image into the min-sized space
     curTrafo->TransformImage( this->finalMoCoReconImage, curMinSizeImgInFullImgSpace );
 
     // Simulate the acquisition
-    nifti_image* curSimulatedDynamicImg = this->imageAcquisition->SimulateImageAcquisition( curMinSizeImgInFullImgSpace, curDynImg );
+    nifti_image* curSimulatedDynamicImg = this->imageAcquisition->SimulateImageAcquisition( curMinSizeImgInFullImgSpace, curDynImg, iImg);
     outDynamicImages.push_back( curSimulatedDynamicImg );
 
     // Free the intermediate images if it was not simply copied over by the image-acquisition object
