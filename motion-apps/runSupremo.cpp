@@ -38,24 +38,24 @@
 /** 
  *  Main executable that instantiates Supremo
  */
-int main( int argc, char *argv[] )
+int main(int argc, char* argv[])
 {
   // First things first: Which version is actually running:
   std::cout << "Running Supremo version (git commit): " << g_GIT_SHA1 << std::endl;
-  
-  
+
+
   // Specify a map that lists all known parameters
   std::map<std::string, CommandLineOption> commandLineOptions;
   // Required
   commandLineOptions["-refState"] = { 1, true, "Reference state image (nifti format)", "<filename>" };
-  commandLineOptions["-dynamic"]  = { 2, true, "Dynamic image data (Number of dynamic images and name of a text "
+  commandLineOptions["-dynamic"] = { 2, true, "Dynamic image data (Number of dynamic images and name of a text "
                                                "file containing the list of dynamic images)", "<int> <filename>" };
-  commandLineOptions["-surr"]     = { 2, true, "Surrogate data (Number of surrogate signals and name of a text "
+  commandLineOptions["-surr"] = { 2, true, "Surrogate data (Number of surrogate signals and name of a text "
                                                "file containing the values of the surrogate signal(s).These should "
                                                "be ordered with 1st value of each signal, then 2nd value of each "
                                                "signal, ..., then last value of each signal)", "<int> <filename>" };
   // Dynamic image data
-  commandLineOptions["-dType"]        = { 1, false, "Specify type of dynamic images, where: \n"
+  commandLineOptions["-dType"] = { 1, false, "Specify type of dynamic images, where: \n"
                                                     "[0] = Full resolution images(default) \n"
                                                     "Can be full or partial image data(slices, slabs) that has the same "
                                                     "resolution as the reference state image.The nifti file headers should "
@@ -65,57 +65,57 @@ int main( int argc, char *argv[] )
                                                     "resolution than the reference state image.Acquisition of low res data will be "
                                                     "simulated along any dimensions where dynamic voxel size > reference state voxel "
                                                     "size. The nifti file headers should provide the imaging geometry.", "<int>" };
-  commandLineOptions["-defSpace"]     = { 1, false, "Filename of the image used to define the space of the deformed images. "
+  commandLineOptions["-defSpace"] = { 1, false, "Filename of the image used to define the space of the deformed images. "
                                                     "This image is used to define the extent and resolution(if specified in "
                                                     "voxels) of the modeland transform CPGs.If a defSpace image is not "
                                                     "specified the reference state image will be used.", "<filename>" };
   // Motion-compensated image reconstruction
-  commandLineOptions["-mcrType"]      = { 1, false, "Specify type of motion compensated image reconstruction, where:\n"
+  commandLineOptions["-mcrType"] = { 1, false, "Specify type of motion compensated image reconstruction, where:\n"
                                                     "[0] = No motion compensated image reconstruction(default)\n"
                                                     "[1] = Weighted average of deformed dynamic images\n"
                                                     "[2] = Super resoltuion(iterative back - projection) - restart recon\n"
                                                     "[3] = Super resoltuion(iterative back - projection) - update recon", "<int>" };
-  commandLineOptions["-maxMCRIt"]     = { 1, false, "Maximum number of iterations to use with iterative reconstruction methods [5]\n"
+  commandLineOptions["-maxMCRIt"] = { 1, false, "Maximum number of iterations to use with iterative reconstruction methods [5]\n"
                                                     "When motion compensated image reconstruction is performed the reference state image "
                                                     "provided as input is used to define the space of the reconstructed image.", "<int>" };
   // Out-/input options
-  commandLineOptions["-outRCM"]       = { 1, false, "Filename for saving the respiratory correspondence model [outputRCM.nii.gz]", "<filename>" };
-  commandLineOptions["-outMCR"]       = { 1, false, "The final motion compensated image reconstruction will be saved using the "
+  commandLineOptions["-outRCM"] = { 1, false, "Filename for saving the respiratory correspondence model [outputRCM.nii.gz]", "<filename>" };
+  commandLineOptions["-outMCR"] = { 1, false, "The final motion compensated image reconstruction will be saved using the "
                                                     "filename provided", "<filename>" };
-  commandLineOptions["-outSimDyn"]    = { 1, false, "The final simualted dynamic image data will be saved in the folder specified", "<folder>" };
-  commandLineOptions["-outDVFs"]      = { 1, false, "The final correspondence model-generated DVFs will be saved in the folder "
+  commandLineOptions["-outSimDyn"] = { 1, false, "The final simualted dynamic image data will be saved in the folder specified", "<folder>" };
+  commandLineOptions["-outDVFs"] = { 1, false, "The final correspondence model-generated DVFs will be saved in the folder "
                                                     "specified.The DVFs will have the size of the dynamic images.", "<folder>" };
-  commandLineOptions["-outInterMCR"]  = { 1, false, "The intermediate MCRs will be saved to the folder specified", "<folder>" };
+  commandLineOptions["-outInterMCR"] = { 1, false, "The intermediate MCRs will be saved to the folder specified", "<folder>" };
   commandLineOptions["-outInterGrad"] = { 1, false, "The intermediate objective function gradients will be saved to the folder specified", "<folder>" };
-  commandLineOptions["-inRCM"]        = { 1, false, "Input file name(s) for a respiratory correspondence model (comma-separated list, one file per sliding "
+  commandLineOptions["-inRCM"] = { 1, false, "Input file name(s) for a respiratory correspondence model (comma-separated list, one file per sliding "
                                                     "region required if used).", "<fName1>,<fName2>" };
   // Transformation options
-  commandLineOptions["-transType"]    = { 1, false, "Transformation type [0]\n"
+  commandLineOptions["-transType"] = { 1, false, "Transformation type [0]\n"
                                                     "[0] = B-spline transformation\n"
                                                     "[1] = Sliding B-spline transformation(requires signed distance map)", "<int>" };
-  commandLineOptions["-sx"]           = { 1, false, "Final grid spacing along the x axis in mm (in voxel if negative value) [5 voxels]", "<float>" };
-  commandLineOptions["-sy"]           = { 1, false, "Final grid spacing along the y axis in mm (in voxel if negative value) [sx value]", "<float>" };
-  commandLineOptions["-sz"]           = { 1, false, "Final grid spacing along the z axis in mm (in voxel if negative value) [sx value]", "<float>" };
-  commandLineOptions["-be"]           = { 1, false, "Weight of the bending energy penalty term [0.0]", "<float>" };
-  commandLineOptions["-le"]           = { 1, false, "Weight of the first order penalty term (symmetric and anti-symmetric part of the Jacobian) [0.0]", "<float>" };
-  commandLineOptions["-distMap"]      = { 1, false, "Signed distance map defining boundary of sliding regions at the zero-crossing", "<filename>" };
-  commandLineOptions["-go"]           = { 1, false, "Weight of the gap-overlap penalty term when using sliding transformation", "<float>" };
+  commandLineOptions["-sx"] = { 1, false, "Final grid spacing along the x axis in mm (in voxel if negative value) [5 voxels]", "<float>" };
+  commandLineOptions["-sy"] = { 1, false, "Final grid spacing along the y axis in mm (in voxel if negative value) [sx value]", "<float>" };
+  commandLineOptions["-sz"] = { 1, false, "Final grid spacing along the z axis in mm (in voxel if negative value) [sx value]", "<float>" };
+  commandLineOptions["-be"] = { 1, false, "Weight of the bending energy penalty term [0.0]", "<float>" };
+  commandLineOptions["-le"] = { 1, false, "Weight of the first order penalty term (symmetric and anti-symmetric part of the Jacobian) [0.0]", "<float>" };
+  commandLineOptions["-distMap"] = { 1, false, "Signed distance map defining boundary of sliding regions at the zero-crossing", "<filename>" };
+  commandLineOptions["-go"] = { 1, false, "Weight of the gap-overlap penalty term when using sliding transformation", "<float>" };
   // Optimisation options
-  commandLineOptions["-maxSwitchIt"]  = { 1, false, "Maximum number of times to iterate between motion compensate image reconstruction and fitting "
+  commandLineOptions["-maxSwitchIt"] = { 1, false, "Maximum number of times to iterate between motion compensate image reconstruction and fitting "
                                                     "the respiratory correspondence model[10]", "<int>" };
-  commandLineOptions["-ln"]           = { 1, false, "Number of level imagepyramid levels to generate [3]", "<int>" };
-  commandLineOptions["-lp"]           = { 1, false, "Only perform processing on the first lp levels [ln]", "<int>" };
-  commandLineOptions["-maxFitIt"]     = { 1, false, "Maximum number of respiratory correspondence model fitting iterations [300]", "<int>" };
+  commandLineOptions["-ln"] = { 1, false, "Number of level imagepyramid levels to generate [3]", "<int>" };
+  commandLineOptions["-lp"] = { 1, false, "Only perform processing on the first lp levels [ln]", "<int>" };
+  commandLineOptions["-maxFitIt"] = { 1, false, "Maximum number of respiratory correspondence model fitting iterations [300]", "<int>" };
   // Help/information
-  commandLineOptions["-h"]            = { 0, false, "Print help message and exit.", "" };
-  
+  commandLineOptions["-h"] = { 0, false, "Print help message and exit.", "" };
+
 
   // Parse the command line
-  std::shared_ptr<CommandLineParser> parser = std::make_shared<CommandLineParser>( argc, argv, commandLineOptions );
+  std::shared_ptr<CommandLineParser> parser = std::make_shared<CommandLineParser>(argc, argv, commandLineOptions);
   std::cout << parser->getCommandLine() << std::endl;
 
   // Check if help is required 
-  if (parser->cmdOptionExists( "-h" ) || !parser->getAllReqreuiredParametersSet())
+  if (parser->cmdOptionExists("-h") || !parser->getAllReqreuiredParametersSet())
   {
     // Required: 
     std::vector<std::string> opts;
@@ -157,8 +157,8 @@ int main( int argc, char *argv[] )
     opts.push_back("-le");
     opts.push_back("-distMap");
     opts.push_back("-go");
-    printFormattedCommandLineOptions(commandLineOptions, "Transformation options", 100, opts); 
-    
+    printFormattedCommandLineOptions(commandLineOptions, "Transformation options", 100, opts);
+
     // Optimisation options
     opts.erase(opts.begin(), opts.end());
     opts.push_back("-maxSwitchIt");
@@ -173,38 +173,38 @@ int main( int argc, char *argv[] )
     printFormattedCommandLineOptions(commandLineOptions, "Help/information", 100, opts);
 
     return EXIT_SUCCESS;
-}
+  }
 
   //--------------------------------
   // Load the reference-state image 
   //--------------------------------
   /// \todo: invalid file name causes memory access violation
-  std::string referenceStateImageFileName = parser->getCmdOptionAsString( "-refState" );
-  nifti_image* referenceStateImage = nifti_image_read( referenceStateImageFileName.c_str(), true );
+  std::string referenceStateImageFileName = parser->getCmdOptionAsString("-refState");
+  nifti_image* referenceStateImage = nifti_image_read(referenceStateImageFileName.c_str(), true);
 
   if (referenceStateImage == nullptr)
   {
     char msg[200];
-    sprintf_s( msg, "Could not read reference state image: %s", parser->getCmdOptionAsString( "-refState" ).c_str() );
-    supremo_print_error( msg );
-    supremo_exit( 1, __FILE__, __LINE__ );
+    sprintf_s(msg, "Could not read reference state image: %s", parser->getCmdOptionAsString("-refState").c_str());
+    supremo_print_error(msg);
+    supremo_exit(1, __FILE__, __LINE__);
   }
 
   //-------------------------
   // Load the dynamic images 
   //-------------------------
 
-  int numberOfDynamicImages = parser->getCmdOptionAsInt( "-dynamic", 0 );
-  std::string dynamicImageFileName = parser->getCmdOptionAsString( "-dynamic", 1 );
+  int numberOfDynamicImages = parser->getCmdOptionAsInt("-dynamic", 0);
+  std::string dynamicImageFileName = parser->getCmdOptionAsString("-dynamic", 1);
   nifti_image** dynamicImages = nullptr; // (nifti_image **)malloc( numberOfDynamicImages * sizeof( nifti_image * ) );
-  std::ifstream dynamicNamesFile( dynamicImageFileName.c_str(), std::ifstream::in );
+  std::ifstream dynamicNamesFile(dynamicImageFileName.c_str(), std::ifstream::in);
 
   if (!dynamicNamesFile.is_open())
   {
     char msg[200];
-    sprintf_s( msg, "Cannot open the dynamic image names file %s", dynamicImageFileName.c_str() );
-    supremo_print_error( msg );
-    supremo_exit( 1, __FILE__, __LINE__ );
+    sprintf_s(msg, "Cannot open the dynamic image names file %s", dynamicImageFileName.c_str());
+    supremo_print_error(msg);
+    supremo_exit(1, __FILE__, __LINE__);
   }
 
   // Read the complete file, check if correct number of files was specified in the file, then read
@@ -215,30 +215,30 @@ int main( int argc, char *argv[] )
     // read values until no more a found in the file
     while (dynamicNamesFile >> curDynamicImageName)
     {
-      allDynamicImageNames.push_back( curDynamicImageName );
+      allDynamicImageNames.push_back(curDynamicImageName);
     }
 
     // Check that the correct number of dynamic images was provided
     if (allDynamicImageNames.size() != numberOfDynamicImages)
     {
-      supremo_print_error( "Number of dynamic images not as expected." );
-      supremo_exit( 1, __FILE__, __LINE__ );
+      supremo_print_error("Number of dynamic images not as expected.");
+      supremo_exit(1, __FILE__, __LINE__);
     }
 
     // Now read the images
-    dynamicImages = (nifti_image **)malloc( numberOfDynamicImages * sizeof( nifti_image * ) );
+    dynamicImages = (nifti_image**)malloc(numberOfDynamicImages * sizeof(nifti_image*));
 
     for (int d = 0; d < numberOfDynamicImages; ++d)
     {
-      dynamicImages[d] = nifti_image_read( allDynamicImageNames[d].c_str(), true );
-      
+      dynamicImages[d] = nifti_image_read(allDynamicImageNames[d].c_str(), true);
+
       // Check if the current image was loaded properly
       if (dynamicImages[d] == nullptr)
       {
         char msg[200];
-        sprintf_s( msg, "Unable to open dynamic image %i: %s", d, allDynamicImageNames[d].c_str() );
-        supremo_print_error( msg );
-        supremo_exit( 1, __FILE__, __LINE__ );
+        sprintf_s(msg, "Unable to open dynamic image %i: %s", d, allDynamicImageNames[d].c_str());
+        supremo_print_error(msg);
+        supremo_exit(1, __FILE__, __LINE__);
       }
     }
   }
@@ -249,19 +249,19 @@ int main( int argc, char *argv[] )
   // Load the surrogate data
   //-------------------------
 
-  int numberOfSurrogateSignals = parser->getCmdOptionAsInt( "-surr", 0 );
-  std::string surrogateFileName = parser->getCmdOptionAsString( "-surr", 1 );
+  int numberOfSurrogateSignals = parser->getCmdOptionAsInt("-surr", 0);
+  std::string surrogateFileName = parser->getCmdOptionAsString("-surr", 1);
 
   // Open the file  
-  std::ifstream surrSignalFile( surrogateFileName.c_str(), std::ifstream::in );
+  std::ifstream surrSignalFile(surrogateFileName.c_str(), std::ifstream::in);
 
   // Check file was opened correctly
   if (!surrSignalFile.is_open())
   {
     char msg[200];
-    sprintf_s( msg, "Surrogate signal file could not be opened: %s", surrogateFileName.c_str() );
-    supremo_print_error( msg );
-    supremo_exit( 1, __FILE__, __LINE__ );
+    sprintf_s(msg, "Surrogate signal file could not be opened: %s", surrogateFileName.c_str());
+    supremo_print_error(msg);
+    supremo_exit(1, __FILE__, __LINE__);
   }
 
   // generate a variable for the surrogate signals in this scope
@@ -275,14 +275,14 @@ int main( int argc, char *argv[] )
     // read values until no more a found in the file
     while (surrSignalFile >> curSurrVal)
     {
-      rawSurrValues.push_back( curSurrVal );
+      rawSurrValues.push_back(curSurrVal);
     }
 
     // Check that the correct number of surrogate signals was provided
     if (rawSurrValues.size() != numberOfSurrogateSignals * numberOfDynamicImages)
     {
-      supremo_print_error( "Number of surrogate signals not as expected." );
-      supremo_exit( 1, __FILE__, __LINE__ );
+      supremo_print_error("Number of surrogate signals not as expected.");
+      supremo_exit(1, __FILE__, __LINE__);
     }
 
     // allocate float array of correct size and copy over values from the vector
@@ -290,7 +290,7 @@ int main( int argc, char *argv[] )
     // management of the vector might invalidate that pointer. Hence explicit.
     surrogateSignals = new float[numberOfSurrogateSignals * numberOfDynamicImages];
 
-    for (int i = 0; i < numberOfDynamicImages*numberOfSurrogateSignals; ++i)
+    for (int i = 0; i < numberOfDynamicImages * numberOfSurrogateSignals; ++i)
     {
       surrogateSignals[i] = rawSurrValues[i];
     }
@@ -304,48 +304,62 @@ int main( int argc, char *argv[] )
   // -defSpace
   nifti_image* defSpaceImage = nullptr;
 
-  if (parser->cmdOptionExists( "-defSpace" ))
+  if (parser->cmdOptionExists("-defSpace"))
   {
-    defSpaceImage = reg_io_ReadImageFile( parser->getCmdOptionAsString( "-defSpace" ).c_str() );
+    defSpaceImage = reg_io_ReadImageFile(parser->getCmdOptionAsString("-defSpace").c_str());
 
     if (defSpaceImage == nullptr)
     {
       char msg[200];
-      sprintf_s( msg, "Could not read space definition image: %s", parser->getCmdOptionAsString( "-defSpace" ).c_str() );
-      supremo_print_error( msg );
-      supremo_exit( 1, __FILE__, __LINE__ );
+      sprintf_s(msg, "Could not read space definition image: %s", parser->getCmdOptionAsString("-defSpace").c_str());
+      supremo_print_error(msg);
+      supremo_exit(1, __FILE__, __LINE__);
     }
   }
 
-  // -dType
-  // Default to "same resolution" option
-  t_dynamicData dynImageType = SAME_RES_AS_STATIC;
   
-  if (parser->cmdOptionExists( "-dType" ))
+  // Generate an image acquisition object as required
+  std::shared_ptr<ImageAcquisition> imageAcquisition = nullptr;
+  if (parser->cmdOptionExists("-dType"))
   {
-    int iTmpDynType = parser->getCmdOptionAsInt( "-dType" );
+    int iTmpDynType = parser->getCmdOptionAsInt("-dType");
+
     switch (iTmpDynType)
     {
-      case SAME_RES_AS_STATIC:
-        dynImageType = SAME_RES_AS_STATIC;
+    case SAME_RES_AS_STATIC:
+      {
+        auto noImageAcquisition = std::make_shared<NoImageAcquisition>();
+        imageAcquisition = noImageAcquisition;
+        break; 
+      }
+    case LOWER_RES_THAN_STATIC:
+      {
+        auto lowResImageAcquisition = std::make_shared<LowResolutionImageAcquisition>();
+        imageAcquisition = lowResImageAcquisition;
         break;
-      case LOWER_RES_THAN_STATIC:
-        dynImageType = LOWER_RES_THAN_STATIC;
-        break;
-      default:
+      }
+    default:
+      {
         char msg[200];
-        sprintf_s( msg, "Dynamic image type unknown: %i", iTmpDynType );
-        supremo_print_error( msg );
-        supremo_exit( 1, __FILE__, __LINE__ );
+        sprintf_s(msg, "Dynamic image type unknown: %i", iTmpDynType);
+        supremo_print_error(msg);
+        supremo_exit(1, __FILE__, __LINE__);
+      }
     }
   }
+  else
+  {
+    imageAcquisition = std::make_shared<NoImageAcquisition>();
+  }
+
+
 
   // -mcrType
   // default to "no reconstruction" option
   // Build the reconstruction object here and pass it to supremo
   std::shared_ptr<MoCoRecon> motionCompensatedImageRecon = nullptr;
 
-  //// Motion compensated image reconstruction 
+  // Motion compensated image reconstruction 
   if (parser->cmdOptionExists( "-mcrType" ))
   {
     int iTmpMCRType = parser->getCmdOptionAsInt( "-mcrType" );
@@ -393,6 +407,10 @@ int main( int argc, char *argv[] )
       }
     }
   }
+
+  // Provide the MCR with the image acquisition
+  motionCompensatedImageRecon->SetImageAcquisition( imageAcquisition );
+
 
   // -outInterMCR
   // default to empty string
@@ -528,7 +546,7 @@ int main( int argc, char *argv[] )
   supremo->SetReferenceStateImage( referenceStateImage );
   supremo->SetSurrogateSignals( surrogateSignals, numberOfSurrogateSignals );
   supremo->SetDefSpaceImage( defSpaceImage ); 
-  supremo->SetDynamicImageDataType( dynImageType );
+  supremo->SetImageAcquisition( imageAcquisition );
   supremo->SetInputRCMImages( inputRCMImages );
   supremo->SetMotionCompensatedReconstruction( motionCompensatedImageRecon );
   supremo->SetInterMCROutputFolder( outputInterMCRFolderName );

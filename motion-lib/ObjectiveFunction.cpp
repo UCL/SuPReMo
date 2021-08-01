@@ -31,7 +31,6 @@ ObjectiveFunction::ObjectiveFunction() :
   correspondenceModel( nullptr ),
   imageSimilarity( nullptr ),
   referenceStateImage( nullptr ),
-  dynamicDataType( SAME_RES_AS_STATIC ),
   imageAcquisition( nullptr )
 {}
 
@@ -121,10 +120,9 @@ void ObjectiveFunction::SetReferenceStateImage( nifti_image* referenceSateImageI
 //-------------------------------------------
 // ObjectiveFunction::SetDynamicImages
 //-------------------------------------------
-void ObjectiveFunction::SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn, t_dynamicData dynamicDataTypeIn )
+void ObjectiveFunction::SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn )
 {
   this->dynamicImages = dynamicImagesIn;
-  this->dynamicDataType = dynamicDataTypeIn;
 }
 
 
