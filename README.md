@@ -4,7 +4,7 @@ Current travis build status  of main branch (Linux build and documentation): [![
 
 ## Introduction 
 
-SuPReMo implements the unified motion modelling and image registation 
+SuPReMo implements the unified motion modelling and image registration 
 framework as proposed by [Jamie McClelland et al.](https://doi.org/10.1088/1361-6560/aa6070) and 
 was developed by Bjoern Eiben  and the Radiotherapy Image Computing Group at the Centre for Medical Image Computing, 
 University College London, UK. 
