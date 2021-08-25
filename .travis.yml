@@ -88,6 +88,7 @@ jobs:
               -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
               -DCMAKE_INSTALL_PREFIX:STRING=${supremo_install_dir} 
               -DBUILD_TESTING:BOOL=ON
+              -DUSE_OPENMP:BOOL=ON
               ${src_dir}
         - cmake --build . -- -j2
         - make install
