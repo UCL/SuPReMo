@@ -298,7 +298,7 @@ void ObjectiveFunction::GetGradient( const PrecisionType* parametersIn, Precisio
     PrecisionType tmpVal;
 #if defined (NDEBUG) && defined (_OPENMP)
 #pragma omp parallel for default(none) \
-         shared(dynamicAfterAdjointDataPtr, imgGradWRTDVFDataPtrX, imgGradWRTDVFDataPtrY, imgGradWRTDVFDataPtrZ, \
+         shared(simGradientWRTwarpedRefStateImageDataPtr, imgGradWRTDVFDataPtrX, imgGradWRTDVFDataPtrY, imgGradWRTDVFDataPtrZ, \
 			imgGradWRTDVFTimesAdjDataPtrX, imgGradWRTDVFTimesAdjDataPtrY, imgGradWRTDVFTimesAdjDataPtrZ, numVox) \
 		 private(voxel, tmpVal)
 #endif
