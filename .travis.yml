@@ -95,7 +95,7 @@ jobs:
 
         # Run the tests
         - cd ${supremo_build_dir}
-        - ctest --output-on-failure -C Release
+        - OMP_NUM_THREADS=4 ctest --output-on-failure -C Release
 
     - stage: documentation
       name: "Building and deploying documentation"
