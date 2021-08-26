@@ -383,18 +383,21 @@ int main(int argc, char* argv[])
       case WEIGHTED_AVERAGING:
       {
         auto avgWeightedReconstructor = std::make_shared<MoCoReconWeightedAverage>();
+        avgWeightedReconstructor->SetImageAcquisition(imageAcquisition);
         motionCompensatedImageRecon = avgWeightedReconstructor;
         break;
       }
       case SUPER_RESOLUTION_RESTART:
       {
         auto superResReconstructor = std::make_shared<MoCoReconSuperResolutionIBP>( maxMCRIt, false );
+        superResReconstructor->SetImageAcquisition(imageAcquisition);
         motionCompensatedImageRecon = superResReconstructor;
         break; 
       }
       case SUPER_RESOLUTION_UPDATE:
       {
         auto superResReconstructor = std::make_shared<MoCoReconSuperResolutionIBP>( maxMCRIt, true );
+        superResReconstructor->SetImageAcquisition(imageAcquisition);
         motionCompensatedImageRecon = superResReconstructor;
         break;
       }
@@ -407,10 +410,6 @@ int main(int argc, char* argv[])
       }
     }
   }
-
-  // Provide the MCR with the image acquisition
-  motionCompensatedImageRecon->SetImageAcquisition( imageAcquisition );
-
 
   // -outInterMCR
   // default to empty string
