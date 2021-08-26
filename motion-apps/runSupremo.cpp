@@ -559,7 +559,11 @@ int main( int argc, char *argv[] )
   }
 
   // Remove anything after .nii (this includes .nii.gz) from the required file name such that we can append the index of the images later
-  outputRCMFileName.replace( outputRCMFileName.find( ".nii" ), outputRCMFileName.length(), "" );
+  std::size_t foundNiiInString = outputRCMFileName.find(".nii");
+  if (foundNiiInString != std::string::npos)
+  {
+    outputRCMFileName.replace(foundNiiInString, outputRCMFileName.length(), "");
+  }
 
   // Get the images and save each one individually
   std::vector<nifti_image*> respCorrModelImgs = supremo->GetCorrespondenceModelAsImage();
@@ -622,23 +626,6 @@ int main( int argc, char *argv[] )
   }
 
 
-
-  //if (parser->cmdOptionExists( "-outSliDistMap" ))
-  //{
-  //  std::string outSlidingDistMapOutputFile = parser->getCmdOptionAsString( "-outSliDistMap" );
-  //  // ToDo: Save final map used for sliding transformation
-  //}
-
-  //if (parser->cmdOptionExists( "-outSliShapeModelParams" ))
-  //{
-  //  std::string outSlidingDistMapOutputFile = parser->getCmdOptionAsString( "-outSliShapeModelParams" );
-  //  // ToDo: Save final motion mask parametersdistance map used for sliding transformation
-  //}
-
-
-  
-
-
   //----------
   // Clean up
   //----------
@@ -649,6 +636,12 @@ int main( int argc, char *argv[] )
   // Delete the command line parser
   parser.reset();
 
+  // Delete the motion-compensated image reconstruction if applicable
+  if (nullptr != motionCompensatedImageRecon)
+  {
+    motionCompensatedImageRecon.reset();
+  }
+  
   // Clean up dynamic images if they were loaded by Supremo (as opposed to loading them from outside and cleaning up there)
   if (dynamicImages != nullptr)
   {
