@@ -86,6 +86,6 @@ int main( int argc, char **argv )
 
    // Generate the low-resolution image acquisition object
    std::shared_ptr<LowResolutionImageAcquisition> lowResAcquisition = std::make_shared< LowResolutionImageAcquisition >();
-   nifti_image* simulatedLowResolutionImage = lowResAcquisition->SimulateImageAcquisition( fullResolultionImage, dynamicImage );
+   nifti_image* simulatedLowResolutionImage = lowResAcquisition->SimulateImageAcquisition( fullResolultionImage, dynamicImage, 0 );
    return checkImageEquality<float>( simulatedLowResolutionImage, resultSimulatedLowResImage, EPS_SINGLE);
 }

@@ -31,7 +31,6 @@ ObjectiveFunction::ObjectiveFunction() :
   correspondenceModel( nullptr ),
   imageSimilarity( nullptr ),
   referenceStateImage( nullptr ),
-  dynamicDataType( SAME_RES_AS_STATIC ),
   imageAcquisition( nullptr )
 {}
 
@@ -121,10 +120,9 @@ void ObjectiveFunction::SetReferenceStateImage( nifti_image* referenceSateImageI
 //-------------------------------------------
 // ObjectiveFunction::SetDynamicImages
 //-------------------------------------------
-void ObjectiveFunction::SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn, t_dynamicData dynamicDataTypeIn )
+void ObjectiveFunction::SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn )
 {
   this->dynamicImages = dynamicImagesIn;
-  this->dynamicDataType = dynamicDataTypeIn;
 }
 
 
@@ -194,13 +192,13 @@ ObjectiveFunction::PrecisionType ObjectiveFunction::GetValue( const ObjectiveFun
     // The image acquisition needs to determine, what is the minimum size of the warped reference
     // state image to warp only as much of the reference state image actually necessary.
     // Note other image acquisition methods might need to provide additional information
-    nifti_image* warpedRefStateImage = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->referenceStateImage, this->dynamicImages[iTimePoint] );
+    nifti_image* warpedRefStateImage = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->referenceStateImage, this->dynamicImages[iTimePoint], iTimePoint );
     
     // transform the image, the result will be written to warpedRefStateImage
     curTransformation->TransformImage( this->referenceStateImage, warpedRefStateImage );
 
     // simulate the image acquisition
-    nifti_image* simulatedDynamicImage = this->imageAcquisition->SimulateImageAcquisition( warpedRefStateImage, this->dynamicImages[iTimePoint] );
+    nifti_image* simulatedDynamicImage = this->imageAcquisition->SimulateImageAcquisition( warpedRefStateImage, this->dynamicImages[iTimePoint], iTimePoint );
 
     // Calculate the similarity value between the simulated dynamic image and the dynamic image
     // Note that the weighting takes place here. Weighting was set when correspondence model and 
@@ -241,7 +239,7 @@ void ObjectiveFunction::GetGradient( const PrecisionType* parametersIn, Precisio
   
   // The gradient of the respiratory motion model is calculated by summing over all time points
   // Iterate over all time points
-  for ( int iTimePoint = 0; iTimePoint < this->surrogateSignals.size(); ++iTimePoint )
+  for ( unsigned int iTimePoint = 0; iTimePoint < this->surrogateSignals.size(); ++iTimePoint )
   {
     // Get the current transformation (based on the surrogate signal) and calculate the 
     // constraint value
@@ -253,27 +251,27 @@ void ObjectiveFunction::GetGradient( const PrecisionType* parametersIn, Precisio
     // The image acquisition needs to determine, what is the minimum size of the warped reference
     // state image to warp only as much of the reference state image actually necessary.
     // Note other image acquisition methods might need to provide additional information
-    nifti_image* warpedRefStateImage = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->referenceStateImage, this->dynamicImages[iTimePoint] );
+    nifti_image* warpedRefStateImage = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->referenceStateImage, this->dynamicImages[iTimePoint], iTimePoint );
 
     // transform the image, the result will be written to warpedRefStateImage
     curTransformation->TransformImage( this->referenceStateImage, warpedRefStateImage );
 
     // simulate the image acquisition
-    nifti_image* simulatedDynamicImage = this->imageAcquisition->SimulateImageAcquisition( warpedRefStateImage, this->dynamicImages[iTimePoint] );
+    nifti_image* simulatedDynamicImage = this->imageAcquisition->SimulateImageAcquisition( warpedRefStateImage, this->dynamicImages[iTimePoint], iTimePoint );
 
     // Allocate output image...
-    nifti_image* simGradImgWRTSimDynVoxels = nifti_copy_nim_info( curDynamicImage );
-    simGradImgWRTSimDynVoxels->data = (void*)calloc( simGradImgWRTSimDynVoxels->nvox, simGradImgWRTSimDynVoxels->nbyper );
+    nifti_image* similarityGradImgWRTSimDynVoxels = nifti_copy_nim_info( curDynamicImage );
+    similarityGradImgWRTSimDynVoxels->data = (void*)calloc( similarityGradImgWRTSimDynVoxels->nvox, similarityGradImgWRTSimDynVoxels->nbyper );
     // ... and calculate the image similarity gradient wrt. the voxel intensities
-    this->imageSimilarity->GetSimilarityGradientWRTVoxels( curDynamicImage, simulatedDynamicImage, simGradImgWRTSimDynVoxels );
+    this->imageSimilarity->GetSimilarityGradientWRTVoxels( curDynamicImage, simulatedDynamicImage, similarityGradImgWRTSimDynVoxels );
 
     // use adjoint of image acquisition to transform measure gradient into warped image space
     // store in dynamicAfterAdjointImage
-    this->imageAcquisition->CalculateAdjoint( this->referenceStateImage, simGradImgWRTSimDynVoxels );
-    nifti_image* dynamicAfterAdjointImage = this->imageAcquisition->GetImageAfterAdjoint();
+    this->imageAcquisition->CalculateAdjoint( this->referenceStateImage, similarityGradImgWRTSimDynVoxels, iTimePoint );
+    nifti_image* simGradientWRTwarpedRefStateImage = this->imageAcquisition->GetImageAfterAdjoint();
 
     // Allocate output image
-    nifti_image* imageGradientWRTDVF = nifti_copy_nim_info( curTransformation->GetDeformationVectorField( dynamicAfterAdjointImage ) );
+    nifti_image* imageGradientWRTDVF = nifti_copy_nim_info( curTransformation->GetDeformationVectorField( simGradientWRTwarpedRefStateImage ) );
     imageGradientWRTDVF->data = calloc( imageGradientWRTDVF->nvox, imageGradientWRTDVF->nbyper );
 
     curTransformation->GetImageGradientWRTDVF( this->referenceStateImage, imageGradientWRTDVF );
@@ -285,8 +283,8 @@ void ObjectiveFunction::GetGradient( const PrecisionType* parametersIn, Precisio
 
     //then it is multiplied by the measure gradient
     long voxel;
-    long numVox = dynamicAfterAdjointImage->nx * dynamicAfterAdjointImage->ny * dynamicAfterAdjointImage->nz;
-    PrecisionType *dynamicAfterAdjointDataPtr = static_cast<PrecisionType *>(dynamicAfterAdjointImage->data);
+    long numVox = simGradientWRTwarpedRefStateImage->nx * simGradientWRTwarpedRefStateImage->ny * simGradientWRTwarpedRefStateImage->nz;
+    PrecisionType *simGradientWRTwarpedRefStateImageDataPtr = static_cast<PrecisionType *>(simGradientWRTwarpedRefStateImage->data);
     PrecisionType *imgGradWRTDVFDataPtrX = static_cast<PrecisionType *>(imageGradientWRTDVF->data);
     PrecisionType *imgGradWRTDVFDataPtrY = &imgGradWRTDVFDataPtrX[numVox];
     PrecisionType *imgGradWRTDVFDataPtrZ = nullptr;
@@ -300,21 +298,21 @@ void ObjectiveFunction::GetGradient( const PrecisionType* parametersIn, Precisio
     PrecisionType tmpVal;
 #if defined (NDEBUG) && defined (_OPENMP)
 #pragma omp parallel for default(none) \
-         shared(dynamicAfterAdjointDataPtr, imgGradWRTDVFDataPtrX, imgGradWRTDVFDataPtrY, imgGradWRTDVFDataPtrZ, \
+         shared(simGradientWRTwarpedRefStateImageDataPtr, imgGradWRTDVFDataPtrX, imgGradWRTDVFDataPtrY, imgGradWRTDVFDataPtrZ, \
 			imgGradWRTDVFTimesAdjDataPtrX, imgGradWRTDVFTimesAdjDataPtrY, imgGradWRTDVFTimesAdjDataPtrZ, numVox) \
 		 private(voxel, tmpVal)
 #endif
     for ( voxel = 0; voxel < numVox; voxel++ )
     {
-      tmpVal = dynamicAfterAdjointDataPtr[voxel] * imgGradWRTDVFDataPtrX[voxel];
+      tmpVal = simGradientWRTwarpedRefStateImageDataPtr[voxel] * imgGradWRTDVFDataPtrX[voxel];
       if ( !isnan(tmpVal) ) 
         imgGradWRTDVFTimesAdjDataPtrX[voxel] = tmpVal;
-      tmpVal = dynamicAfterAdjointDataPtr[voxel] * imgGradWRTDVFDataPtrY[voxel];
+      tmpVal = simGradientWRTwarpedRefStateImageDataPtr[voxel] * imgGradWRTDVFDataPtrY[voxel];
       if ( !isnan(tmpVal) )
         imgGradWRTDVFTimesAdjDataPtrY[voxel] = tmpVal;
       if (imgGradWRTDVFDataPtrZ != nullptr)
       {
-        tmpVal = dynamicAfterAdjointDataPtr[voxel] * imgGradWRTDVFDataPtrZ[voxel];
+        tmpVal = simGradientWRTwarpedRefStateImageDataPtr[voxel] * imgGradWRTDVFDataPtrZ[voxel];
         if (!isnan( tmpVal ))
           imgGradWRTDVFTimesAdjDataPtrZ[voxel] = tmpVal;
       }
@@ -338,7 +336,7 @@ void ObjectiveFunction::GetGradient( const PrecisionType* parametersIn, Precisio
     this->correspondenceModel->GetTransformationParameterGradientWRTModelParameters( transformationGradient, this->surrogateSignals[iTimePoint], gradientOut );
 
     // Clean up for this time-point
-    nifti_image_free( simGradImgWRTSimDynVoxels );
+    nifti_image_free( similarityGradImgWRTSimDynVoxels );
     
     // If no image acquisition was simulated, these will be the same, so need to free up only one and set the other one to null. 
     if (warpedRefStateImage == simulatedDynamicImage)

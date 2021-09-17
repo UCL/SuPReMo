@@ -88,13 +88,14 @@ jobs:
               -DCMAKE_CONFIGURATION_TYPES:STRING=Release 
               -DCMAKE_INSTALL_PREFIX:STRING=${supremo_install_dir} 
               -DBUILD_TESTING:BOOL=ON
+              -DUSE_OPENMP:BOOL=ON
               ${src_dir}
         - cmake --build . -- -j2
         - make install
 
         # Run the tests
         - cd ${supremo_build_dir}
-        - ctest --output-on-failure -C Release
+        - OMP_NUM_THREADS=4 ctest --output-on-failure -C Release
 
     - stage: documentation
       name: "Building and deploying documentation"

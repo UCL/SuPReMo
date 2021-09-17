@@ -77,7 +77,7 @@ int main( int argc, char **argv )
    std::shared_ptr<LowResolutionImageAcquisition> lowResAcquisition = std::make_shared< LowResolutionImageAcquisition >();
 
   // Request the minimum-size image in full image space
-   nifti_image* generatedMinSizeImage = lowResAcquisition->AllocateMinimumSizeImgInFullImgSpace( fullResolultionImage, dynamicImage );
+   nifti_image* generatedMinSizeImage = lowResAcquisition->AllocateMinimumSizeImgInFullImgSpace( fullResolultionImage, dynamicImage, 0 );
    
    bool geometryOK = true;
    if (checkImageGeometryEquality( generatedMinSizeImage, resultMinSizeImage ) == EXIT_FAILURE)

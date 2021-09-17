@@ -101,12 +101,13 @@ public:
   void SetDefSpaceImage( nifti_image* defSpaceImageIn );
 
 
-  /** Set the dynamic image type, i.e. same or lower resolution as static image
-   *  \param dynamicImgaeDataTypeIn Type of the dynamic data.
+  /** Set an image acquisition object. Has to be created externally.
    */
-  void SetDynamicImageDataType( t_dynamicData dynamicImgaeDataTypeIn );
+  void SetImageAcquisition( std::shared_ptr<ImageAcquisition> imageAcquisitionIn );
 
-  /** Set the motion compensated image reconstruction class.
+
+  /** Set the motion compensated image reconstruction object. 
+  *   \note The image acquisition has to be passed on to the reconstruction externally - no longer set internally by SuPReMo.
    *  \param mocoReconstructionIn Object that implements a motion compensated image reconstruction.
    */
   void SetMotionCompensatedReconstruction( std::shared_ptr<MoCoRecon> mocoReconstructionIn );
@@ -261,9 +262,7 @@ private:
   std::vector<std::vector<float> > surrogateSignals; ///< Vector of vector containing the the surrogate signals. First index for time point, second for surrogate signal number \verbatim surrogateSignals[time][surrNumber] \endverbatim
   
   nifti_image* defSpaceImage;                     ///< Pointer to image that defines the space of the deformed images.
-
-  t_dynamicData dynamicImageDataType;             ///< Dynamic data type 
-
+    
   std::vector<nifti_image*> inputRCMImages;       ///< The vector holding the pointer to the respiratory correspondence model images. Will be used as a starting point of the optimisation. 
 
   unsigned int maxSwitchIterationNumber;          ///< Maximum number of times to iterate between motion compensated reconstruction and fitting the respiratory correspondence model

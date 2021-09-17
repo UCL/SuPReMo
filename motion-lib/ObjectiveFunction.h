@@ -125,7 +125,7 @@ public:
    *  \param dynamicImagesIn Vector holding the pointer to the dynamic images. Must be of same size as surrogate signals ObjectiveFunction::SetSurrogateSignals. 
    *  \param dynamicDataTypeIn Defines the type of the dynamic data
    */
-  void SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn, t_dynamicData dynamicDataTypeIn );
+  void SetDynamicImages( const std::vector<nifti_image*>& dynamicImagesIn );
 
   /** Set the image acquisition object. Has to implement functionality to simulate the acquisition process and to calculate the 
    *  adjoint of that process. 
@@ -139,7 +139,6 @@ private:
   SurrogateSignalType surrogateSignals;                       ///< All surrogate signals
   nifti_image* referenceStateImage;                           ///< Nifti image structure with all 
   std::vector<nifti_image*> dynamicImages;                    ///< Vector holding all pointers to the dynamic images
-  t_dynamicData dynamicDataType;                              ///< Specifying dynamic data type
   PrecisionType similarityWeight;                             ///< Similarity weight \f[ 1-\lambda \f]
   std::shared_ptr<ImageAcquisition> imageAcquisition;         ///< The object simulating acquisition and calculating the adjoint of the image acquisition procedure.
 };

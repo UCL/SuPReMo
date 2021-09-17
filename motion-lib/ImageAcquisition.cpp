@@ -29,7 +29,8 @@ ImageAcquisition::ImageAcquisition()
   : imageAfterAdjoint(nullptr),
   weightsImageAfterAdjoint(nullptr),
   curImageInAcquisitionSpace(nullptr),
-  curImageInFullImgSpace(nullptr)
+  curImageInFullImgSpace(nullptr),
+  curDynamicImageTimePoint(0)
 {}
 
 

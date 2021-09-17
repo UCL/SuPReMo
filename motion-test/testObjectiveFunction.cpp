@@ -253,7 +253,7 @@ int main(int argc, char **argv)
 	{
     curDynamicImages.push_back( dynamicImages[nDynImg] );
 	}
-	objectiveFunction->SetDynamicImages(curDynamicImages, SAME_RES_AS_STATIC);
+	objectiveFunction->SetDynamicImages(curDynamicImages);
 
   CorrespondenceModel::PrecisionType* corParams = (CorrespondenceModel::PrecisionType*)calloc( correspondenceModel->GetNumberOfParameters(), sizeof( CorrespondenceModel::PrecisionType ) );
   CorrespondenceModel::PrecisionType* gradAtZero = (CorrespondenceModel::PrecisionType*)calloc( correspondenceModel->GetNumberOfParameters(), sizeof( CorrespondenceModel::PrecisionType ) );

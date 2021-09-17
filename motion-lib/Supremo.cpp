@@ -41,7 +41,6 @@ Supremo::Supremo() :
   referenceStateImage( nullptr ),
   defSpaceImage( nullptr ),
   finalMoCoReconImage( nullptr ),
-  dynamicImageDataType( SAME_RES_AS_STATIC ),
   maxSwitchIterationNumber( -1 ),
   maxModelFitIterationNumber( 0 ),
   numberOfLevels( 3 ),
@@ -150,33 +149,33 @@ void Supremo::SetSurrogateSignals( float* surrogateSignalsIn, int numberOfSurrog
 
 
 
-//------------------------------------
-// Supremo::SetDynamicImageDataType
-//------------------------------------
-void Supremo::SetDynamicImageDataType( t_dynamicData dynamicImgaeDataTypeIn )
+
+//------------------------------
+// Supremo::SetImageAcquisition
+//------------------------------
+void Supremo::SetImageAcquisition(std::shared_ptr<ImageAcquisition> imageAcquisitionIn )
 {
   // Set the dynamic image data type
-  this->dynamicImageDataType = dynamicImgaeDataTypeIn;
-  return;
+  this->imageAcquisition = imageAcquisitionIn;
 }
 
 
 
-//-----------------------
-// Supremo::SetMCRType
-//-----------------------
+//---------------------------------------------
+// Supremo::SetMotionCompensatedReconstruction
+//---------------------------------------------
 void Supremo::SetMotionCompensatedReconstruction( std::shared_ptr<MoCoRecon> mocoReconstructionIn )
 {
-  // Set the motion-compensated image reconstruction type
+  // Set the motion-compensated image reconstruction object
   this->mocoReconstructor = mocoReconstructionIn;
 }
 
 
 
 
-//------------------------------------
+//----------------------------------
 // Supremo::SetInterMCROutputFolder
-//------------------------------------
+//----------------------------------
 void Supremo::SetInterMCROutputFolder( const std::string & outputFolderIn)
 {
   // Define the folder name where to save the intermediate motion-compensated images
@@ -310,7 +309,6 @@ void Supremo::FitMotionModelAndReconstruct()
       this->mocoReconstructor->SetSurrogateSignals( this->surrogateSignals );
       this->mocoReconstructor->SetDynamicImages( curDynamicImages );
       this->mocoReconstructor->SetCorrespondenceModel( this->correspondenceModel );
-      this->mocoReconstructor->SetImageAcquisition( this->imageAcquisition );
       this->mocoReconstructor->SetReconstructionGeometryImage( this->currentReferenceStateImage );
       
       // and perform the first reconstruction for this level
@@ -330,7 +328,7 @@ void Supremo::FitMotionModelAndReconstruct()
     objectiveFunction->SetSurrogateSignals( this->surrogateSignals );
     objectiveFunction->SetSimilarityMeasure( this->similarityMeasure );
     objectiveFunction->SetReferenceStateImage( this->currentReferenceStateImage );
-    objectiveFunction->SetDynamicImages( curDynamicImages, this->dynamicImageDataType );
+    objectiveFunction->SetDynamicImages( curDynamicImages );
     objectiveFunction->SetImageAcquisition( this->imageAcquisition );
 
     // initialise the optimiser for fitting the model
@@ -512,13 +510,13 @@ std::vector<nifti_image*> Supremo::SimulateDynamicImages()
     reg_tools_changeDatatype<VoxelType>( curDynImg );
 
     // Use the image acquisition class to define the minimum sized image that we need to define the 
-    nifti_image* curMinSizeImgInFullImgSpace = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->finalMoCoReconImage, curDynImg );
+    nifti_image* curMinSizeImgInFullImgSpace = this->imageAcquisition->AllocateMinimumSizeImgInFullImgSpace( this->finalMoCoReconImage, curDynImg, iImg );
     
     // Use the transformation to warp the final image into the min-sized space
     curTrafo->TransformImage( this->finalMoCoReconImage, curMinSizeImgInFullImgSpace );
 
     // Simulate the acquisition
-    nifti_image* curSimulatedDynamicImg = this->imageAcquisition->SimulateImageAcquisition( curMinSizeImgInFullImgSpace, curDynImg );
+    nifti_image* curSimulatedDynamicImg = this->imageAcquisition->SimulateImageAcquisition( curMinSizeImgInFullImgSpace, curDynImg, iImg);
     outDynamicImages.push_back( curSimulatedDynamicImg );
 
     // Free the intermediate images if it was not simply copied over by the image-acquisition object
@@ -685,28 +683,6 @@ void Supremo::Initialise()
   // Currently only SSD supported 
   this->similarityMeasure = std::make_shared<SSDImageSimilarity>();
 
-  // Initialise the image acquisition
-  switch (this->dynamicImageDataType)
-  {
-    case SAME_RES_AS_STATIC:
-    {
-      auto noImageAcquisition = std::make_shared<NoImageAcquisition>();
-      this->imageAcquisition = noImageAcquisition;
-      break;
-    }
-    case LOWER_RES_THAN_STATIC:
-    {
-      auto lowResImageAcquisition = std::make_shared<LowResolutionImageAcquisition>();
-      this->imageAcquisition = lowResImageAcquisition;
-      break;
-    }
-    default:
-      // Defaults to no-image-acquisition simulation
-      auto noImageAcquisition = std::make_shared<NoImageAcquisition>();
-      this->imageAcquisition = noImageAcquisition;
-      break;
-  }
-
   this->initialised = true;
   }
 
@@ -792,6 +768,16 @@ void Supremo::CheckParameters()
     else
       this->maxSwitchIterationNumber = 10;
   }
+
+  // Checke that the image acquisition was set correctly
+  if (this->imageAcquisition == nullptr)
+  {
+    char msg[200];
+    sprintf_s(msg, "Image acquisition has to be set before trying to fit a model.");
+    supremo_print_error(msg);
+    supremo_exit(1, __FILE__, __LINE__);
+  }
+
 }
 
 

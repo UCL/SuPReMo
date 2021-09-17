@@ -45,7 +45,7 @@ LowResolutionImageAcquisition::~LowResolutionImageAcquisition()
 //---------------------------------------------------------
 // LowResolutionImageAcquisition::SimulateImageAcquisition
 //---------------------------------------------------------
-nifti_image* LowResolutionImageAcquisition::SimulateImageAcquisition( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace )
+nifti_image* LowResolutionImageAcquisition::SimulateImageAcquisition( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace, unsigned int dynamicImageTimePoint)
 {
 
   // Allocate the simualted dynamic image (or low resolution image), which must have the same size as the image in acquisition space
@@ -546,11 +546,12 @@ nifti_image* LowResolutionImageAcquisition::SimulateImageAcquisition( nifti_imag
 //-------------------------------------------------
 // LowResolutionImageAcquisition::CalculateAdjoint
 //-------------------------------------------------
-void LowResolutionImageAcquisition::CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace )
+void LowResolutionImageAcquisition::CalculateAdjoint( nifti_image* imgInFullImgSpace, nifti_image* imgInAcquisitionSpace, unsigned int dynamicImageTimePoint)
 {
   // The current image in acquisition space is remembered for the allocation of the image after adjoint
   this->curImageInAcquisitionSpace = imgInAcquisitionSpace;
   this->curImageInFullImgSpace = imgInFullImgSpace;
+  this->curDynamicImageTimePoint = dynamicImageTimePoint; // Unused, but set for consistency. 
 
   // Allocate the image after applying the adjoint and the corresponding weights image
   this->AllocateImageAfterAdjoint();
@@ -999,7 +1000,7 @@ void LowResolutionImageAcquisition::CalculateAdjoint( nifti_image* imgInFullImgS
 //---------------------------------------------------------------------
 // LowResolutionImageAcquisition::AllocateMinimumSizeImgInFullImgSpace
 //---------------------------------------------------------------------
-nifti_image * LowResolutionImageAcquisition::AllocateMinimumSizeImgInFullImgSpace( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace )
+nifti_image * LowResolutionImageAcquisition::AllocateMinimumSizeImgInFullImgSpace( nifti_image * imgInFullImgSpace, nifti_image * imgInAcquisitionSpace, unsigned int dynamicImageTimePoint )
 {
   // The size of the allocated image needs to be determined. Starting with size is the image in acquisition space (the lower resolution),
   // the size will be refined below using the geometry information provided by imgInFullImgSpace (the higher resolution).
@@ -1121,6 +1122,6 @@ void LowResolutionImageAcquisition::AllocateImageAfterAdjoint()
 {
   // Delete the previous image after applying the adjoint of the image acquisition
   this->ClearImageAfterAdjoint();
-  this->imageAfterAdjoint = this->AllocateMinimumSizeImgInFullImgSpace(this->curImageInFullImgSpace, this->curImageInAcquisitionSpace);
+  this->imageAfterAdjoint = this->AllocateMinimumSizeImgInFullImgSpace(this->curImageInFullImgSpace, this->curImageInAcquisitionSpace, this->curDynamicImageTimePoint);
 }
 
