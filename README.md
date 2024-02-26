@@ -6,11 +6,13 @@ Current travis build status  of main branch (Linux build and documentation): [![
 
 SuPReMo implements the unified motion modelling and image registration 
 framework as proposed by [Jamie McClelland et al.](https://doi.org/10.1088/1361-6560/aa6070) and 
-was developed by Bjoern Eiben  and the Radiotherapy Image Computing Group at the Centre for Medical Image Computing, 
-University College London, UK. 
+was developed by Bjoern Eiben  and the Radiotherapy Image Computing Group at the Centre for Medical Image Computing, University College London, UK. The publication describing this software package can be found [here](https://doi.org/10.1088/1361-6560/ad222f). 
 
-The source code is available on [github](https://github.com/UCL/SuPReMo) and the [documentation](https://github-pages.ucl.ac.uk/SuPReMo/) is 
-hosted on the corresponding github-pages.
+If you publish any results using this package, please cite the following publications:
+* Eiben, B., Bertholet, J., Tran, E.H., Wetscherek, A., Shiarli, A.M., Nill, S., Oelfke, U. and McClelland, J.R., 2024. *Respiratory motion modelling for MR-guided lung cancer radiotherapy: model development and geometric accuracy evaluation.* Physics in Medicine and Biology.  [doi: 10.1088/1361-6560/ad222f](https://doi.org/10.1088/1361-6560/ad222f)
+* McClelland, J.R., Modat, M., Arridge, S., Grimes, H., D’Souza, D., Thomas, D., O’Connell, D., Low, D.A., Kaza, E., Collins, D.J. and Leach, M.O., 2017. *A generalized framework unifying image registration and respiratory motion models and incorporating image reconstruction, for partial image data or full images.* Physics in Medicine & Biology, 62(11), p.4273. [doi: 10.1088/1361-6560/aa6070](https://doi.org/10.1088/1361-6560/aa6070) 
+
+The source code is available on [github](https://github.com/UCL/SuPReMo) and the [documentation](https://github-pages.ucl.ac.uk/SuPReMo/) is hosted on the corresponding github-pages.
 
 
 ## Getting started
