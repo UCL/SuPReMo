@@ -40,6 +40,8 @@ jobs:
             run-build: true
             run-test: true
             options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall
+            source-dir: ${{github.workspace}}/SuPReMoSource
+            build-dir: ${{github.workspace}}/SuPReMoBuild
 
 #      - name: Build Project
 #        runs: cmake --build build##
