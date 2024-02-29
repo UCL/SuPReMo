@@ -1,0 +1,31 @@
+name: Build
+on:
+  push:
+jobs:
+  build-project:
+    name: Build Project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dependency nifty-reg
+        uses: actions/checkout@v4.1.1
+        with:
+            repository: KCL-BMEIS/niftyreg
+            path: niftyregSource
+
+      - name: Configure Project
+        uses: threeal/cmake-action@v1.3.0
+        with:
+            run-build: true
+            run-test: false
+            source-dir: niftyregSource
+            build-dir: niftyregBuild
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+        with:
+            path: SuPReMoSource
+
+#      - name: Build Project
+#        runs: cmake --build build##
+#
+#      - name: Test Project
+#        runs: ctest --test-dir build
