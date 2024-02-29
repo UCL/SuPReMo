@@ -12,7 +12,7 @@ jobs:
             repository: KCL-BMEIS/niftyreg
             path: ${{github.workspace}}/niftyregSource
 
-      - name: Configure Project
+      - name: Configure build nifty-reg 
         uses: threeal/cmake-action@v1.3.0
         with:
             run-build: true
@@ -21,9 +21,9 @@ jobs:
             source-dir: ${{github.workspace}}/niftyregSource
             build-dir: ${{github.workspace}}/niftyregBuild
 
-      - name: Install nifty-reg dependency 
+      - name: Install dependencies nifty-reg 
         run: |
-              cd ${{github.workspace}}/niftyregSource
+              cd ${{github.workspace}}/niftyregBuild
               pwd
               ls -la
               make install
@@ -31,7 +31,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
         with:
-            path: SuPReMoSource
+            path: ${{github.workspace}}/SuPReMoSource
+
+
+      - name: Configure build SuPReMo
+        uses: threeal/cmake-action@v1.3.0
+        with: 
+            run-build: true
+            run-test: true
+            options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall
 
 #      - name: Build Project
 #        runs: cmake --build build##
