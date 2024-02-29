@@ -20,7 +20,6 @@ jobs:
           # These are default values, but included for clarity
           doxyfile-path: ./Doxyfile
           working-directory: .
-          additional-packages: font-fira-code
           enable-latex: true
       - name: Pages Deployment
         uses: peaceiris/actions-gh-pages@v3
