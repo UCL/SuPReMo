@@ -10,15 +10,24 @@ jobs:
         uses: actions/checkout@v4.1.1
         with:
             repository: KCL-BMEIS/niftyreg
-            path: niftyregSource
+            path: $GITHUB_WORKSPACE/niftyregSource
 
       - name: Configure Project
         uses: threeal/cmake-action@v1.3.0
         with:
             run-build: true
             run-test: false
+            options: [ CMAKE_INSTALL_PREFIX:STRING = $GITHUB_WORKSPCE/niftyRegInstall ]
             source-dir: niftyregSource
             build-dir: niftyregBuild
+
+      - name: Install nifty-reg dependency 
+        run: |
+              cd ${GITHUB_WORKSPACE}/niftyregSource
+              pwd
+              ls -la
+              make install
+
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
         with:
