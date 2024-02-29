@@ -17,7 +17,7 @@ jobs:
         with:
             run-build: true
             run-test: false
-            options: [ CMAKE_INSTALL_PREFIX:STRING = $GITHUB_WORKSPCE/niftyRegInstall ]
+            options:  "CMAKE_INSTALL_PREFIX=$GITHUB_WORKSPCE/niftyRegInstall"
             source-dir: niftyregSource
             build-dir: niftyregBuild
 
