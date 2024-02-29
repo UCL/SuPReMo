@@ -1,6 +1,7 @@
-# SuPReMo - Surrogate Parametrised Respiratory Motion Modelling    {#mainpage}
+# SuPReMo - Surrogate Parametrised Respiratory Motion Modelling   {#mainpage}
 
-Current travis build status  of main branch (Linux build and documentation): [![Build Status](https://travis-ci.com/UCL/SuPReMo.svg?token=ryYEyvSMfhuCX4W6bRRD&branch=main)](https://travis-ci.com/UCL/SuPReMo)
+![Documentation status](https://github.com/UCL/SuPReMo/actions/workflows/deploy_pages.yml/badge.svg)
+
 
 ## Introduction 
 
