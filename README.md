@@ -1,15 +1,20 @@
 # SuPReMo - Surrogate Parametrised Respiratory Motion Modelling   {#mainpage}
 
+![Build and test status](https://github.com/UCL/SuPReMo/actions/workflows/build_and_test.yml/badge.svg)
 ![Documentation status](https://github.com/UCL/SuPReMo/actions/workflows/deploy_pages.yml/badge.svg)
-
+[![License](https://img.shields.io/badge/License-BSD_3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Introduction 
 
 SuPReMo implements the unified motion modelling and image registration 
 framework as proposed by [Jamie McClelland et al.](https://doi.org/10.1088/1361-6560/aa6070) and 
-was developed by Bjoern Eiben  and the Radiotherapy Image Computing Group at the Centre for Medical Image Computing, University College London, UK. The publication describing the background of this software package in the context of a multi-slice image acquisition designed for an MR-Linac workflow can be found [here](https://doi.org/10.1088/1361-6560/ad222f). 
+was developed by Bjoern Eiben  and the Radiotherapy Image Computing Group at the Centre for Medical 
+Image Computing, University College London, UK. The publication describing the background of this 
+software package in the context of a multi-slice image acquisition designed for an MR-Linac workflow 
+can be found [here](https://doi.org/10.1088/1361-6560/ad222f). 
 
-The source code is available on [github](https://github.com/UCL/SuPReMo) and the [documentation](https://github-pages.ucl.ac.uk/SuPReMo/) is hosted on the corresponding github-pages.
+The source code is available on [github](https://github.com/UCL/SuPReMo) and the 
+[documentation](https://github-pages.ucl.ac.uk/SuPReMo/) is hosted on the corresponding github-pages.
 
 If you publish any results using this package, please cite the following publications:
 

@@ -14,7 +14,7 @@ on your system, a minimum of version 3.3 is required by the CMakeLists.txt.
 
 ### Nifty-Reg
 
-During the build step SuPReMo links to the libraries of  *nifty-reg* which is available 
+During the build step SuPReMo links to the libraries of *nifty-reg* which is available 
 [here](https://github.com/KCL-BMEIS/niftyreg) and the build will be described below.
 
 

@@ -1,0 +1,50 @@
+# Github action for building, and testing SuPReMo. 
+# 1) Build nifty-reg first, since it is required by SuPReMo
+# 2) Build SuPReMo and finally run the tests. 
+
+name: Build
+on:
+  push:
+  pull_request:
+    branches:
+        - main
+jobs:
+  build-project:
+    name: Build dependencies, project, and run tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout dependency nifty-reg
+        uses: actions/checkout@v4.1.1
+        with:
+            repository: KCL-BMEIS/niftyreg
+            path: ${{github.workspace}}/niftyregSource
+
+      - name: Configure build nifty-reg 
+        uses: threeal/cmake-action@v1.3.0
+        with:
+            run-build: true
+            run-test: false
+            options:  CMAKE_INSTALL_PREFIX=${{github.workspace}}/niftyRegInstall BUILD_ALL_DEP=ON CMAKE_CONFIGURATION_TYPES=Release
+            source-dir: ${{github.workspace}}/niftyregSource
+            build-dir: ${{github.workspace}}/niftyregBuild
+
+      - name: Install dependencies nifty-reg 
+        run: |
+              cd ${{github.workspace}}/niftyregBuild
+              pwd
+              ls -la
+              make install
+
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+        with:
+            path: ${{github.workspace}}/SuPReMoSource
+
+      - name: Configure, build, and test SuPReMo
+        uses: threeal/cmake-action@v1.3.0
+        with: 
+            run-build: true
+            run-test: true
+            options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall BUILD_TESTING=ON CMAKE_CONFIGURATION_TYPES=Release
+            source-dir: ${{github.workspace}}/SuPReMoSource
+            build-dir: ${{github.workspace}}/SuPReMoBuild
