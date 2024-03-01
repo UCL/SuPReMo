@@ -17,7 +17,7 @@ jobs:
         with:
             run-build: true
             run-test: false
-            options:  CMAKE_INSTALL_PREFIX=${{github.workspace}}/niftyRegInstall
+            options:  CMAKE_INSTALL_PREFIX=${{github.workspace}}/niftyRegInstall BUILD_ALL_DEP=ON
             source-dir: ${{github.workspace}}/niftyregSource
             build-dir: ${{github.workspace}}/niftyregBuild
 
@@ -39,12 +39,7 @@ jobs:
         with: 
             run-build: true
             run-test: true
-            options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall
+            options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall 
             source-dir: ${{github.workspace}}/SuPReMoSource
             build-dir: ${{github.workspace}}/SuPReMoBuild
 
-#      - name: Build Project
-#        runs: cmake --build build##
-#
-#      - name: Test Project
-#        runs: ctest --test-dir build
