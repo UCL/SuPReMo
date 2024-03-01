@@ -17,7 +17,7 @@ jobs:
         with:
             run-build: true
             run-test: false
-            options:  CMAKE_INSTALL_PREFIX=${{github.workspace}}/niftyRegInstall BUILD_ALL_DEP=ON
+            options:  CMAKE_INSTALL_PREFIX=${{github.workspace}}/niftyRegInstall BUILD_ALL_DEP=ON CMAKE_CONFIGURATION_TYPES=Release
             source-dir: ${{github.workspace}}/niftyregSource
             build-dir: ${{github.workspace}}/niftyregBuild
 
@@ -33,13 +33,12 @@ jobs:
         with:
             path: ${{github.workspace}}/SuPReMoSource
 
-
-      - name: Configure build SuPReMo
+      - name: Configure, build, and test SuPReMo
         uses: threeal/cmake-action@v1.3.0
         with: 
             run-build: true
             run-test: true
-            options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall 
+            options:  NiftyReg_DIR=${{github.workspace}}/niftyRegInstall BUILD_TESTING=ON CMAKE_CONFIGURATION_TYPES=Release
             source-dir: ${{github.workspace}}/SuPReMoSource
             build-dir: ${{github.workspace}}/SuPReMoBuild
 
